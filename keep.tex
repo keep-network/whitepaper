@@ -10,9 +10,8 @@
 
 \date{}
 
-\begin{document}
-\maketitle
-\begin{abstract}
+\begin{document} \maketitle \begin{abstract}
+
   We introduce the keep, a new privacy primitive for smart contracts
   on public blockchains, as well as supporting components, including
   the keep market and token, that make up the Keep network.
@@ -57,9 +56,9 @@ primary issues always come up: scalability and privacy”
 
 Scalability of public blockchains is a hurdle to mainstream adoption.
 Some of the best minds in the cryptocurrency space [lightning]
-[ethereum-sharding] [plasma] are working on multiple order-of-magnitude
-improvements. Privacy, however, hasn’t garnered the same attention,
-especially in smart contracts.
+[ethereum-sharding] [plasma] are working on multiple
+order-of-magnitude improvements. Privacy, however, hasn’t garnered the
+same attention, especially in smart contracts.
 
 Basic use cases of smart contracts, including publishing secrets after
 certain criteria are met, assessing borrower risk for a loan, and
@@ -257,10 +256,8 @@ compute and storage resources.
 
 Consumer contracts, on the other hand, need keeps that will
 
-\begin{itemize}
-  \item Be highly available and robust against data loss
-  \item Maintain confidentiality and data integrity
-\end{itemize}
+\begin{itemize} \item Be highly available and robust against data loss
+\item Maintain confidentiality and data integrity \end{itemize}
 
 \subsection{Paying for keeps}
 
@@ -385,29 +382,31 @@ dead man switch- publishing a secret, under certain contract
 conditions.
 
 Examples of dead man switch applications with keeps include automated
-inheritance (“send my heir my private key if I don’t check in quarterly”),
-arbitration with time limits (“if no decision is made in 10 blocks, publish a
-shared secret”), as well as protection for leakers (“publish a key to these
-insurance files if I don’t check in”).
+inheritance (“send my heir my private key if I don’t check in
+quarterly”), arbitration with time limits (“if no decision is made in
+10 blocks, publish a shared secret”), as well as protection for
+leakers (“publish a key to these insurance files if I don’t check
+in”).
 
 \subsection{Marketplaces for digital goods}
 
-Buying and selling digital goods on public blockchains often requires settling
-off-chain. Keeps make marketplaces for digital goods, like audio and video
-files, straightforward.
+Buying and selling digital goods on public blockchains often requires
+settling off-chain. Keeps make marketplaces for digital goods, like
+audio and video files, straightforward.
 
-Before the Keep network, buying and selling audio files on a public blockchain
-might look something like this.
+Before the Keep network, buying and selling audio files on a public
+blockchain might look something like this.
 
-First, the buyer and seller must agree to terms, including an arbitrator. The
-funds are escrowed, and the symmetric key protecting the audio file is
-encrypted with the buyer’s public key, and published on-chain with a hash of
-the cleartext key. If the buyer can access the file, they release the escrowed
-funds- otherwise, the arbitrator decides who gets the funds.
+First, the buyer and seller must agree to terms, including an
+arbitrator. The funds are escrowed, and the symmetric key protecting
+the audio file is encrypted with the buyer’s public key, and published
+on-chain with a hash of the cleartext key. If the buyer can access the
+file, they release the escrowed funds- otherwise, the arbitrator
+decides who gets the funds.
 
-To give the arbitrator access to the file, the buyer publishes the key, this
-time encrypted with the arbitrator’s public key. The arbitrator then decides
-where to disburse the funds.
+To give the arbitrator access to the file, the buyer publishes the
+key, this time encrypted with the arbitrator’s public key. The
+arbitrator then decides where to disburse the funds.
 
 We’ve skipped a few steps for simplicity, but some of the issues
 should be clear. More robust escrow and arbitration schemes require
@@ -415,19 +414,19 @@ ${n^2}$ on-chain transactions, and buying and selling private
 information requires that any recipient access the digital good in the
 clear to confirm a trade.
 
-Keeps improve this situation by encapsulating the secret, and providing easily
-auditable access logs. Keeps simplify complex escrow scenarios, and allow
-resale of digital goods without unnecessarily exposing all parties to the
-secret in the clear.
+Keeps improve this situation by encapsulating the secret, and
+providing easily auditable access logs. Keeps simplify complex escrow
+scenarios, and allow resale of digital goods without unnecessarily
+exposing all parties to the secret in the clear.
 
 \subsection{Pseudorandomness Oracle}
 
 Since keeps can populate themselves with random data, they can act as
 pseudorandomness oracles, improving on currently popular methods
 [prng-stackexchange]. sMPC and other secure keeps are a good fit for
-decentralized lotteries and other games of chance, as well as offering a
-building block for other on-chain algorithms that require tamper-resistant
-pRNG.
+decentralized lotteries and other games of chance, as well as offering
+a building block for other on-chain algorithms that require
+tamper-resistant pRNG.
 
 This capability is an important component of advanced keep users, like
 decentralized signing.
