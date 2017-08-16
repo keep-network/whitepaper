@@ -409,10 +409,11 @@ To give the arbitrator access to the file, the buyer publishes the key, this
 time encrypted with the arbitrator’s public key. The arbitrator then decides
 where to disburse the funds.
 
-We’ve skipped a few steps for simplicity, but some of the issues should be
-clear. More robust escrow and arbitration schemes require n^2 on-chain
-transactions, and buying and selling private information requires that any
-recipient access the digital good in the clear to confirm a trade.
+We’ve skipped a few steps for simplicity, but some of the issues
+should be clear. More robust escrow and arbitration schemes require
+${n^2}$ on-chain transactions, and buying and selling private
+information requires that any recipient access the digital good in the
+clear to confirm a trade.
 
 Keeps improve this situation by encapsulating the secret, and providing easily
 auditable access logs. Keeps simplify complex escrow scenarios, and allow
