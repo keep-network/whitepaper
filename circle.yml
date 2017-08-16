@@ -4,4 +4,4 @@ dependencies:
 
 test:
   override:
-    - pdflatex keep.tex
+    - pdflatex -halt-on-error keep.tex
