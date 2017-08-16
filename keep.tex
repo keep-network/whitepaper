@@ -1,0 +1,119 @@
+%% Based on the style files for ACL-2015
+
+\documentclass[11pt]{article}
+\usepackage{acl2015}
+
+\title{The Keep Network: A Privacy Layer for Public Blockchains}
+
+\author{Matt Luongo \\
+  Fold \\
+  {\tt mhluongo@gmail.com}}
+
+\date{}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+  We introduce the keep, a new privacy primitive for smart contracts
+  on public blockchains, as well as supporting components, including
+  the keep market and token, that make up the Keep network.
+
+  Rather than aiming to solve generic private smart contracts with an
+  alternative computation network, we present an incremental approach
+  that can be brought to market on the Ethereum public network,
+  iterated on, and adapted for other public blockchains and
+  cross-blockchain use.
+\end{abstract}
+
+\section{Motivation}
+
+\subsection{The irony of public blockchains}
+
+Public blockchains have brought unprecedented transparency and
+auditability to financial technology. Records are immutable,
+verifiable, and censorship-resistant.
+
+Unfortunately, these strengths are also weaknesses for many potential
+users.
+
+For every financial use case a public blockchain enables, its public
+status restricts another. Bitcoin is touted as a more private payment
+method than the traditional financial system, but those familiar with
+the technology know that while it may be censorship-resistant, it’s
+certainly not private by default [bitcoin-privacy]. Developers
+introduced to Ethereum quickly learn to adjust their expectations
+[ethereum-stackexchange]- all contract state is published to the
+blockchain, and can be easily read by competing interests.
+
+These issues are recognized by developers of the Bitcoin and Ethereum
+projects. Confidential transactions [confidential-transactions] is an
+ongoing effort to bring better privacy, and therefore fungibility, to
+Bitcoin. As early as December 2014, Vitalik Buterin, one of the
+founders of Ethereum, explored solving this problem with secure multi
+party computation (sMPC) [secret-sharing-daos]. In more recent
+writing, Buterin shares that “...when [he] and others talk to
+companies about building their applications on a blockchain, two
+primary issues always come up: scalability and privacy”
+[privacy-on-the-blockchain].
+
+Scalability of public blockchains is a hurdle to mainstream adoption.
+Some of the best minds in the cryptocurrency space [lightning]
+[ethereum-sharding] [plasma] are working on multiple order-of-magnitude
+improvements. Privacy, however, hasn’t garnered the same attention,
+especially in smart contracts.
+
+Basic use cases of smart contracts, including publishing secrets after
+certain criteria are met, assessing borrower risk for a loan, and
+verifying real-world identity on the blockchain, are incredibly
+difficult on today’s public blockchains.
+
+\section{Introducing keeps}
+
+To solve this mismatch between the transparency of public blockchains,
+and the need of many smart contracts for private data, we introduce
+the idea of {\em keeps}.
+
+A keep is an off-chain container for private data. Keeps allow
+contracts to manage and use private data without exposing the data to
+the public blockchain.
+
+\subsection{Keep operations}
+
+\subsubsection{Creation and population}
+\subsubsection{Publishing data on-chain}
+\subsubsection{Access management}
+\subsubsection{Destruction}
+
+\section{Managing third-party risk}
+
+\subsection{Secure multi party computation}
+
+\section{Keep providers}
+\subsection{Simple sMPC}
+\subsection{Signing sMPC}
+\subsection{Trusted third-party}
+\subsubsection{Redundant trusted third-party}
+\subsection{Future providers}
+
+\section{Incentivizing keep providers}
+
+\subsection{Paying for keeps}
+\subsection{Concerns with uptimes and reliability}
+\subsection{Concerns with active attacks}
+
+\section{High-level network design}
+
+\section{The keep market}
+\section{The Keep network token}
+\section{The result registry}
+
+\section{Applications}
+
+\section{Dead man switch}
+\section{Marketplaces for digital goods}
+\section{Pseudorandomness Oracle}
+\section{Decentralized signing service}
+\section{Encryption service for blockchain storage}
+\section{Banking on public blockchains}
+
+\end{document}
