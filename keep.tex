@@ -46,15 +46,21 @@ introduced to Ethereum quickly learn to adjust their expectations
 blockchain, and can be easily read by competing interests.
 
 These issues are recognized by developers of the Bitcoin and Ethereum
-projects. Confidential transactions \cite{confidentialTransactions} is
-an ongoing effort to bring better privacy, and therefore fungibility,
-to Bitcoin. As early as December 2014, Vitalik Buterin, one of the
-founders of Ethereum, explored solving this problem with secure multi
-party computation (sMPC) \cite{secretSharingDaos}. In more recent
-writing, Buterin shares that “...when [he] and others talk to
-companies about building their applications on a blockchain, two
-primary issues always come up: scalability and privacy”
-\cite{privacyOnTheBlockchain}.
+projects.
+
+Confidential transactions \cite{confidentialTransactions} is an
+ongoing effort to bring better privacy, and therefore fungibility, to
+Bitcoin via sidechains \cite{confidentialTransactionsElements}. The
+Zerocash project \cite{zerocash} applied zero-knowledge proofs to
+Bitcoin, leading to the creation of Zcash \cite{zcash}, a
+cryptocurrency using zk-SNARKs to ensure transaction privacy.
+
+As early as December 2014, Vitalik Buterin, one of the founders of
+Ethereum, explored solving this problem with secure multi party
+computation (sMPC) \cite{secretSharingDaos}. In more recent writing,
+Buterin shares that “...when [he] and others talk to companies about
+building their applications on a blockchain, two primary issues always
+come up: scalability and privacy” \cite{privacyOnTheBlockchain}.
 
 Scalability of public blockchains is a hurdle to mainstream adoption.
 Some of the best minds in the cryptocurrency space \cite{lightning}
@@ -260,8 +266,10 @@ compute and storage resources.
 
 Consumer contracts, on the other hand, need keeps that will
 
-\begin{itemize} \item Be highly available and robust against data loss
-\item Maintain confidentiality and data integrity \end{itemize}
+\begin{itemize}
+  \item Be highly available and robust against data loss
+  \item Maintain confidentiality and data integrity
+\end{itemize}
 
 \subsection{Paying for keeps}
 
@@ -424,7 +432,7 @@ providing easily auditable access logs. Keeps simplify complex escrow
 scenarios, and allow resale of digital goods without unnecessarily
 exposing all parties to the secret in the clear.
 
-\subsection{Pseudorandomness Oracle}
+\subsection{Pseudorandomness oracle}
 
 Since keeps can populate themselves with random data, they can act as
 pseudorandomness oracles, improving on currently popular methods
