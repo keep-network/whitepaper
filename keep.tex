@@ -153,8 +153,55 @@ computes a function over that share. The outputs are then reported to
 the dealer, who can assemble the final output, without any participant
 learning more than their initial secret share.
 
-Recent sMPC approaches only maintain security in the face of an honest
-majority. However, by using a public blockchain as an immutable
+Intuitively, sMPC works like this.
+
+\begin{enumerate}
+  \item A dealer $D$ wants to compute a function $F$ over a secret,
+      $S$.
+  \item The dealer selects $n$ parties to the computation, sending
+      each of them a share of the secret, $s_i$.
+  \item Each party computes a function over their share $f_i(s_i)$ and
+      reports the result to the dealer.
+  \item The dealer combines these outputs, such that
+      $G(f_1(s_1),f_2(s_2),...f_n(s_n)) = F(S)$
+\end{enumerate}
+
+The shares $s_i$ should be chosen in such a way that exposing any
+share does't jeopardize the secret $S$. A common approach is to use
+Shamir's secret sharing \cite{shamir}, such that details about the
+secret remain confidential in the face of $n-1$ dishonest parties.
+
+This explanation holds for all $F$ including addition, subtraction,
+and multiplication by a known constant. To achieve general
+computation, however, we also need to be able to multiply secrets
+securely.
+
+Multiplication adds what the literature calls "rounds"- communicaton
+between the parties, rather than just the dealer $D$.
+
+To multiply two secrets, each party $P_i$ of the $n$ chosen by the
+dealer splits its share, $s_i$, into two components, $s_{i1}$ and
+$s_{i2}$. The party multiplies those two components, resulting in
+$s_{i'}$. Each $P_i$ then acts as a dealer among the the remaining
+parties, splitting $s_{i'}$ into $n-1$ pieces.
+
+Each $P_i$ can now resolve their resulting share of the round of
+multiplication, $s'_i$, given their access to $n-1$ shares of
+$s_{i'}$.
+
+With addition and multiplication, sMPC can securely execute general
+computation, at the expense of communication overhead between the
+computing parties.
+
+\subsection{sMPC and the blockchain}
+
+sMPC was originally conceived in 1982 \cite{yao1982protocols}, but its
+practical application has been limited due to restrictions on the
+security model. Existing sMPC solutions only maintain security in the
+face of an honest majority of parties.
+
+The advent of the blockchain enables secure usage of sMPC in
+adversarial scenarioes. By using a public blockchain as an immutable
 ledger, sMPC can be made secure in the face of a dishonest
 supermajority \cite{spdz}, and with the requirement of a network
 token, can be made strongly Sybil-resistant \footnote{Refer to
@@ -258,7 +305,6 @@ The off-chain keep pattern is also flexible enough to include a
 variety of other providers, each with their own unique benefits-
 including using secure or otherwise specialized hardware.
 
-
 \section{Incentivizing keep providers}
 
 Providers need to be incentivized to maintain capacity on the network.
@@ -327,9 +373,9 @@ a unique share backing an sMPC keep are colluding- an extremely high
 bar for a Sybil attack.
 
 Recent approaches using SPDZ proofs \cite{spdz} anchored on the
-blockchain \cite{bitcoinSmpc} \cite{blockchainMultipartyComputation}
-make such correctness attacks impossible, even if all nodes backing a
-keep are compromised. sMPC and trusted third-party keeps will publish
+blockchain \cite{bitcoinSmpc, blockchainMultipartyComputation} make
+such correctness attacks impossible, even if all nodes backing a keep
+are compromised. sMPC and trusted third-party keeps will publish
 proofs to the public blockchain that can be used to verify
 correctness. The threat of active attacks is then reduced to
 disrupting keep availability, rather than returning malformed data.
@@ -466,7 +512,7 @@ These services offer few privacy guarantees, leaving the onus of file
 encryption on users. Keeps can provide a private bridge to blockchain
 storage. By generating an AES key at keep initialization and providing
 off-chain data access to the keep, smart contracts can use keeps to
-secure files stored on Filecoin.
+secure files stored on decentralized services.
 
 \subsection{Banking on public blockchains}
 
