@@ -4,8 +4,10 @@ general:
 
 dependencies:
   pre:
-    - sudo apt-get install texlive-latex-base
+    - sudo apt-get install texlive-latex-base texlive-binaries
 
 test:
   override:
+    - pdflatex -halt-on-error keep.tex
+    - bibtex keep.tex
     - pdflatex -halt-on-error keep.tex

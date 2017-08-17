@@ -21,6 +21,7 @@
   that can be brought to market on the Ethereum public network,
   iterated on, and adapted for other public blockchains and
   cross-blockchain use.
+
 \end{abstract}
 
 \section{Motivation}
@@ -38,25 +39,25 @@ For every financial use case a public blockchain enables, its public
 status restricts another. Bitcoin is touted as a more private payment
 method than the traditional financial system, but those familiar with
 the technology know that while it may be censorship-resistant, it’s
-certainly not private by default [bitcoin-privacy]. Developers
+certainly not private by default \cite{bitcoinPrivacy}. Developers
 introduced to Ethereum quickly learn to adjust their expectations
-[ethereum-stackexchange]- all contract state is published to the
+\cite{ethereumStackexchange}- all contract state is published to the
 blockchain, and can be easily read by competing interests.
 
 These issues are recognized by developers of the Bitcoin and Ethereum
-projects. Confidential transactions [confidential-transactions] is an
-ongoing effort to bring better privacy, and therefore fungibility, to
-Bitcoin. As early as December 2014, Vitalik Buterin, one of the
+projects. Confidential transactions \cite{confidentialTransactions} is
+an ongoing effort to bring better privacy, and therefore fungibility,
+to Bitcoin. As early as December 2014, Vitalik Buterin, one of the
 founders of Ethereum, explored solving this problem with secure multi
-party computation (sMPC) [secret-sharing-daos]. In more recent
+party computation (sMPC) \cite{secretSharingDaos}. In more recent
 writing, Buterin shares that “...when [he] and others talk to
 companies about building their applications on a blockchain, two
 primary issues always come up: scalability and privacy”
-[privacy-on-the-blockchain].
+\cite{privacyOnTheBlockchain}.
 
 Scalability of public blockchains is a hurdle to mainstream adoption.
-Some of the best minds in the cryptocurrency space [lightning]
-[ethereum-sharding] [plasma] are working on multiple
+Some of the best minds in the cryptocurrency space \cite{lightning}
+\cite{ethereumSharding} \cite{plasma} are working on multiple
 order-of-magnitude improvements. Privacy, however, hasn’t garnered the
 same attention, especially in smart contracts.
 
@@ -147,9 +148,9 @@ learning more than their initial secret share.
 Recent sMPC approaches only maintain security in the face of an honest
 majority. However, by using a public blockchain as an immutable
 ledger, sMPC can be made secure in the face of a dishonest
-supermajority [spdz], and with the requirement of a network token, can
-be made strongly Sybil-resistant [refer to incentivizing keep
-providers section].
+supermajority \cite{spdz}, and with the requirement of a network
+token, can be made strongly Sybil-resistant \footnote{Refer to
+"Incentivizing keep providers" for more details}.
 
 For these reasons, sMPC and blockchains are a natural fit. In the
 smart contract space, sMPC has been proposed before as a privacy
@@ -157,10 +158,11 @@ mechanic.
 
 In 2014, Vitalik Buterin gave a strong introduction to the subject in
 an early blog post on privacy on the Ethereum public blockchain
-[secret-sharing-daos]. In 2016, a team from UMD designed Hawk [hawk],
-a system that marries public and private smart contracts via sMPC, and
-the Enigma project out of MIT describes a system related to ours
-[enigma], with a wider focus on general private computation.
+\cite{secretSharingDaos}. In 2016, a team from UMD designed Hawk
+\cite{hawk}, a system that marries public and private smart contracts
+via sMPC, and the Enigma project out of MIT describes a system related
+to ours \cite{enigma}, with a wider focus on general private
+computation.
 
 The Keep network will incorporate these ideas into the first
 production-ready sMPC system for a public blockchain.
@@ -178,13 +180,13 @@ share of the provided secret, such that the secret can’t be
 reconstructed without all n nodes colluding.
 
 These keeps can be populated securely by divvying up a secret into
-shares via Shamir secret sharing [shamir], and encrypting each share
-with its respective node’s public key. The encrypted shares can then
-be published to the public blockchain, or communicated off-chain.
+shares via Shamir secret sharing \cite{shamir}, and encrypting each
+share with its respective node’s public key. The encrypted shares can
+then be published to the public blockchain, or communicated off-chain.
 
 The only computation these keeps will run is an implementation of
-distributed RSA [distributed-rsa] on sMPC, used to publish encrypted
-data to the blockchain.
+distributed RSA \cite{distributedRsa} on sMPC, used to publish
+encrypted data to the blockchain.
 
 
 \subsection{Signing sMPC}
@@ -194,8 +196,8 @@ securely generating pseudorandom numbers, and signing and encrypting
 data, using the keep’s contents as a key.
 
 In addition to simple pseudorandom numbers, signing keeps will be able
-to generate RSA [distributed-rsa] and Bitcoin key pairs [coinparty],
-or be populated with them via secret sharing.
+to generate RSA \cite{distributedRsa} and Bitcoin key pairs
+\cite{coinparty}, or be populated with them via secret sharing.
 
 This means signing keeps will be able to sign and secure contract
 communications on- and off-chain, as well as sign transactions for
@@ -231,12 +233,13 @@ integrity guarantees, at the expense of confidentiality.
 
 Other keep providers are an area for future work.
 
-Unlike related work on systems like Enigma or Hawk [enigma][hawk],
-which use sMPC to build  off-chain and alternative-chain computation
-networks for private smart contracts, we’ve chosen to restrict the
-Simple  and Signing sMPC keeps to merely generating, securing,
-storing, encrypting, and transmitting secrets. Such restrictions help
-to minimize the attack surface on keeps in a production network.
+Unlike related work on systems like Enigma \cite{enigma} or Hawk
+\cite{hawk}, which use sMPC to build  off-chain and alternative-chain
+computation networks for private smart contracts, we’ve chosen to
+restrict the Simple  and Signing sMPC keeps to merely generating,
+securing, storing, encrypting, and transmitting secrets.  Such
+restrictions help to minimize the attack surface on keeps in a
+production network.
 
 In later work, sMPC schemes can be used to build more feature-rich
 keeps. These keeps will enable complex use cases, like operating
@@ -275,7 +278,7 @@ lifetime of the keep, and refilled occasionally by the calling
 contract. Though this seems like a good fit for payment channels,
 minimizing on-chain fees, the security ramifications differ from
 typical two-party channels. These differences are discussed further in
-the next section [refer to next section].
+the next section.
 
 Payment per operation is simpler. Each request to publish a keep’s
 contents will require payment of an amount agreed to at the
@@ -306,20 +309,20 @@ optionally re-negotiate fees for a running keep.
 
 \subsection{Concerns with active attacks}
 
-Existing open-source sMPC frameworks, such as VIFF[viff], are secure
-against active attacks in the presence of a ¾ supermajority of honest
-nodes. In such an attack, keeps can be forced to return malformed
-data, but secrets can’t be compromised unless all nodes with a unique
-share backing an sMPC keep are colluding- an extremely high bar for a
-Sybil attack.
+Existing open-source sMPC frameworks, such as VIFF \cite{viff}, are
+secure against active attacks in the presence of a ¾ supermajority of
+honest nodes. In such an attack, keeps can be forced to return
+malformed data, but secrets can’t be compromised unless all nodes with
+a unique share backing an sMPC keep are colluding- an extremely high
+bar for a Sybil attack.
 
-Recent approaches using SPDZ proofs [spdz] anchored on the blockchain
-[bitcoin-smpc] [blockchain-multiparty-computation] make such
-correctness attacks impossible, even if all nodes backing a keep are
-compromised. sMPC and trusted third-party keeps will publish proofs to
-the public blockchain that can be used to verify correctness. The
-threat of active attacks is then reduced to disrupting keep
-availability, rather than returning malformed data.
+Recent approaches using SPDZ proofs \cite{spdz} anchored on the
+blockchain \cite{bitcoinSmpc} \cite{blockchainMultipartyComputation}
+make such correctness attacks impossible, even if all nodes backing a
+keep are compromised. sMPC and trusted third-party keeps will publish
+proofs to the public blockchain that can be used to verify
+correctness. The threat of active attacks is then reduced to
+disrupting keep availability, rather than returning malformed data.
 
 We address the issue of network disruption by introducing two
 incentives to keep providers, making active attacks on data
@@ -334,10 +337,11 @@ obtain an outsize portion of all tokens locked up by keep providers to
 ensure their overwhelming selection backing new keeps.
 
 Second, keep redundancy can be used to further minimize availability
-disruptions [noyes]. All nodes can be required to include a deposit
-when they publish their results. If their results can’t be verified by
-the included SPDZ proof, their deposit is forfeit to competing nodes.
-This idea can be generalized to work with RTTP and sMPC keeps.
+disruptions \cite{blockchainMultipartyComputation}. All nodes can be
+required to include a deposit when they publish their results. If
+their results can’t be verified by the included SPDZ proof, their
+deposit is forfeit to competing nodes.  This idea can be generalized
+to work with RTTP and sMPC keeps.
 
 \section{High-level network design}
 
@@ -423,7 +427,7 @@ exposing all parties to the secret in the clear.
 
 Since keeps can populate themselves with random data, they can act as
 pseudorandomness oracles, improving on currently popular methods
-[prng-stackexchange]. sMPC and other secure keeps are a good fit for
+\cite{prngStackexchange}. sMPC and other secure keeps are a good fit for
 decentralized lotteries and other games of chance, as well as offering
 a building block for other on-chain algorithms that require
 tamper-resistant pRNG.
@@ -444,9 +448,9 @@ answer a challenge-response protocol under certain network conditions.
 
 \subsection{Encryption service for blockchain storage}
 
-Services like Filecoin [filecoin] and Storj [storj] are being built to
-provide cheap, ubiquitous storage, accessible globally, via smart
-contracts and traditional storage interfaces.
+Services like Filecoin \cite{filecoin} and Storj \cite{ storj } are
+being built to provide cheap, ubiquitous storage, accessible globally,
+via smart contracts and traditional storage interfaces.
 
 These services offer few privacy guarantees, leaving the onus of file
 encryption on users. Keeps can provide a private bridge to blockchain
@@ -469,5 +473,7 @@ highly competitive; the terms of a loan aren’t typically made public.
 Keep providers that execute generic private smart contracts can
 protect scores and the risk assessment process, while maintaining
 auditability and all other benefits of a public blockchain.
+
+\bibliography{keep}
 
 \end{document}
