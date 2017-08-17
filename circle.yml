@@ -4,7 +4,10 @@ general:
 
 dependencies:
   pre:
-    - sudo apt-get install texlive-latex-base texlive-binaries
+    - sudo apt-get install texlive-latex-base
+    - sudo apt-get install texlive-binaries
+    - sudo apt-get install texlive-generic-extra
+    - sudo apt-get install texlive-latex-extra
 
 test:
   override:
