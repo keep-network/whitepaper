@@ -185,7 +185,7 @@ share with its respective node’s public key. The encrypted shares can
 then be published to the public blockchain, or communicated off-chain.
 
 The only computation these keeps will run is an implementation of
-distributed RSA \cite{distributedRsa} on sMPC, used to publish
+distributed RSA \cite{mauland2009realizing} on sMPC, used to publish
 encrypted data to the blockchain.
 
 
@@ -196,7 +196,7 @@ securely generating pseudorandom numbers, and signing and encrypting
 data, using the keep’s contents as a key.
 
 In addition to simple pseudorandom numbers, signing keeps will be able
-to generate RSA \cite{distributedRsa} and Bitcoin key pairs
+to generate RSA \cite{mauland2009realizing} and Bitcoin key pairs
 \cite{coinparty}, or be populated with them via secret sharing.
 
 This means signing keeps will be able to sign and secure contract
@@ -448,7 +448,7 @@ answer a challenge-response protocol under certain network conditions.
 
 \subsection{Encryption service for blockchain storage}
 
-Services like Filecoin \cite{filecoin} and Storj \cite{ storj } are
+Services like Filecoin \cite{filecoin} and Storj \cite{storj} are
 being built to provide cheap, ubiquitous storage, accessible globally,
 via smart contracts and traditional storage interfaces.
 
@@ -474,6 +474,7 @@ Keep providers that execute generic private smart contracts can
 protect scores and the risk assessment process, while maintaining
 auditability and all other benefits of a public blockchain.
 
+\bibliographystyle{unsrt}
 \bibliography{keep}
 
 \end{document}
