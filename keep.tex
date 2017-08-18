@@ -450,34 +450,24 @@ in”).
 
 \subsection{Marketplaces for digital goods}
 
-Buying and selling digital goods on public blockchains often requires
+Buying and selling digital goods on public blockchains today requires
 settling off-chain. Keeps make marketplaces for digital goods, like
 audio and video files, straightforward.
 
-Before the Keep network, buying and selling audio files on a public
-blockchain might look something like this.
+Without keeps, each transfer of a private digital good requires one or
+more hash-reveal constructions on-chain. More complex scenarioes
+that require escrow, arbitrators, and other parties who might need
+access to the transfered digital good will need ${n^2}$ on-chain
+transactions to maintain security. They also require each party to be
+online to participate.
 
-First, the buyer and seller must agree to terms, including an
-arbitrator. The funds are escrowed, and the symmetric key protecting
-the audio file is encrypted with the buyer’s public key, and published
-on-chain with a hash of the cleartext key. If the buyer can access the
-file, they release the escrowed funds- otherwise, the arbitrator
-decides who gets the funds.
+Keeps obviate always-online requirements, and simplify the hash-reveal
+protocol to access management. All keep access is auditable, and
+participants can have access to a keep without viewing its contents,
+allowing further optimization.
 
-To give the arbitrator access to the file, the buyer publishes the
-key, this time encrypted with the arbitrator’s public key. The
-arbitrator then decides where to disburse the funds.
-
-We’ve skipped a few steps for simplicity, but some of the issues
-should be clear. More robust escrow and arbitration schemes require
-${n^2}$ on-chain transactions, and buying and selling private
-information requires that any recipient access the digital good in the
-clear to confirm a trade.
-
-Keeps improve this situation by encapsulating the secret, and
-providing easily auditable access logs. Keeps simplify complex escrow
-scenarios, and allow resale of digital goods without unnecessarily
-exposing all parties to the secret in the clear.
+Without an always-online requirement or complex reveal protocols,
+keeps can efficiently support services like iTunes on the blockchain.
 
 \subsection{Pseudorandomness oracle}
 
