@@ -493,14 +493,21 @@ decentralized signing.
 
 \subsection{Decentralized signing service}
 
-Future keep providers will be able to sign messages, including
-blockchain transactions, using a generated private key.
+Signing sMPC keep providers are able to sign messages, including
+blockchain transactions, using a generated or provided private key.
 
-A decentralized signing service can participate in multi-sig
-transactions, only signing transactions that follow a strict set of
-rules, including daily spending limits and recipient whitelists. Such
-a service can also be used as a second-factor authentication provider,
-answer a challenge-response protocol under certain network conditions.
+For the first time, contracts will be able to assert their identity
+off-chain, without requiring the recipient's awareness of blockchain
+state.
+
+Consider a decentralized signing service for Bitcoin transactions. The
+service can participate in multi-signature transactions, only signing
+transactions that follow a strict set of rules, including daily
+spending limits and recipient whitelists.
+
+Other uses for such a service include second-factor authentication,
+where a contract can answer a challenge-response protocol based on
+rules on the blockchain.
 
 \subsection{Encryption service for blockchain storage}
 
