@@ -509,6 +509,16 @@ Other uses for such a service include second-factor authentication,
 where a contract can answer a challenge-response protocol based on
 rules on the blockchain.
 
+\subsection{Custodial wallets and cross-chain trading}
+
+As a special case of a signing service, contracts can use keeps to
+generate their own cryptocurrency wallets, taking full custody of any
+received funds.
+
+For example, a contract can generate a Bitcoin wallet, and sign
+Bitcoin transactions in response to receiving assets on the contract's
+native blockchain.
+
 \subsection{Encryption service for blockchain storage}
 
 Services like Filecoin \cite{filecoin} and Storj \cite{storj} are
