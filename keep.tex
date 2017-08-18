@@ -15,13 +15,14 @@
 \begin{document} \maketitle \begin{abstract}
 
   We introduce the keep, a new privacy primitive for smart contracts
-  on public blockchains, as well as supporting components, including
-  the keep market and token, that make up the Keep network.
+  on public blockchains, enabling secure storage and computation of
+  secrets, as well as supporting components, including the keep market
+  and token, that make up the Keep network.
 
   Rather than aiming to solve generic private smart contracts with an
   alternative computation network, we present an incremental approach
-  that can be brought to market on the Ethereum public network,
-  iterated on, and adapted for other public blockchains and
+  to privacy that can be brought to market on the Ethereum public
+  network, iterated on, and adapted for other public blockchains and
   cross-blockchain use.
 
 \end{abstract}
@@ -100,10 +101,10 @@ Alternatively, a keep can self-populate with pseudorandom data.
 
 \subsubsection{Publishing data on-chain}
 
-The most useful function of a keep is to publish or otherwise make use
-of its secret.
+The most useful function of a keep is to compute a function over its
+secret and publish the results to the blockchain.
 
-Initially, keeps will only support publishing their secrets on-chain.
+Initially, keeps will support publishing their secrets on-chain.
 Contracts can request a keep to publish a secret in the clear or
 encrypted with a provided public key. This allows keeps to provide
 functionality that’s difficult in today’s public smart contracts, like
@@ -127,13 +128,12 @@ of secret access.
 
 \subsubsection{Destruction}
 
-Keeps can be long- or short-lived. Contracts can request that a keep
-be shut down, and should also handle keeps being terminated
-unexpectedly. Note that although keeps can be shut down, there can be
-no guarantees that a secret wasn’t persisted- instead, we rely on
-other confidentiality guarantees, covered later in the paper.
+Depending on the use case, keeps can be long- or short-lived.
+Contracts can request that a keep shut down, and should also handle
+keeps that are terminated unexpectedly, covered in more detail later
+in the paper \ref{uptime}.
 
-\section{Managing third-party risk}
+\section{Eliminating third-party risk}
 
 We’ve described a simple black box for off-chain data storage. The
 standardization of this method of secret management will enable
@@ -204,8 +204,8 @@ The advent of the blockchain enables secure usage of sMPC in
 adversarial scenarioes. By using a public blockchain as an immutable
 ledger, sMPC can be made secure in the face of a dishonest
 supermajority \cite{spdz}, and with the requirement of a network
-token, can be made strongly Sybil-resistant \footnote{Refer to
-"Incentivizing keep providers" for more details}.
+token, can be made strongly Sybil-resistant
+\ref{incentivizingProviders}.
 
 For these reasons, sMPC and blockchains are a natural fit. In the
 smart contract space, sMPC has been proposed before as a privacy
@@ -305,7 +305,7 @@ The off-chain keep pattern is also flexible enough to include a
 variety of other providers, each with their own unique benefits-
 including using secure or otherwise specialized hardware.
 
-\section{Incentivizing keep providers}
+\section{Incentivizing keep providers} \label{incentivizingProviders}
 
 Providers need to be incentivized to maintain capacity on the network.
 Running and securing keeps should be a profitable way to use excess
@@ -340,7 +340,7 @@ Payment per operation is simpler. Each request to publish a keep’s
 contents will require payment of an amount agreed to at the
 initialization of a keep.
 
-\subsection{Concerns with uptimes and reliability}
+\subsection{Concerns with uptime and reliability} \label{uptime}
 
 Because availability is vital to using keeps in practice, improper
 termination must be disincentivized.
