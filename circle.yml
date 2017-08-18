@@ -11,7 +11,4 @@ dependencies:
 
 test:
   override:
-    - pdflatex -halt-on-error keep.tex
-    - bibtex keep
-    - pdflatex -halt-on-error keep.tex
-    - pdflatex -halt-on-error keep.tex
+    - make clean && make keep.pdf
