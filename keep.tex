@@ -60,9 +60,9 @@ cryptocurrency using zk-SNARKs to ensure transaction privacy.
 As early as December 2014, Vitalik Buterin, one of the founders of
 Ethereum, explored solving this problem with secure multi party
 computation (sMPC) \cite{secretSharingDaos}. In more recent writing,
-Buterin shares that “...when [he] and others talk to companies about
+Buterin shares that ``when [he] and others talk to companies about
 building their applications on a blockchain, two primary issues always
-come up: scalability and privacy” \cite{privacyOnTheBlockchain}.
+come up: scalability and privacy'' \cite{privacyOnTheBlockchain}.
 
 Scalability of public blockchains is a hurdle to mainstream adoption.
 Some of the best minds in the cryptocurrency space \cite{lightning}
@@ -167,7 +167,7 @@ Intuitively, sMPC works like this.
 \end{enumerate}
 
 The shares $s_i$ should be chosen in such a way that exposing any
-share does't jeopardize the secret $S$. A common approach is to use
+share does not jeopardize the secret $S$. A common approach is to use
 Shamir's secret sharing \cite{shamir}, such that details about the
 secret remain confidential in the face of $n-1$ dishonest parties.
 
@@ -176,7 +176,7 @@ and multiplication by a known constant. To achieve general
 computation, however, we also need to be able to multiply secrets
 securely.
 
-Multiplication adds what the literature calls "rounds"- communicaton
+Multiplication adds what the literature calls ``rounds''- communication
 between the parties, rather than just the dealer $D$.
 
 To multiply two secrets, each party $P_i$ of the $n$ chosen by the
@@ -289,9 +289,9 @@ integrity guarantees, at the expense of confidentiality.
 Other keep providers are an area for future work.
 
 Unlike related work on systems like Enigma \cite{enigma} or Hawk
-\cite{hawk}, which use sMPC to build  off-chain and alternative-chain
+\cite{hawk}, which use sMPC to build off-chain and alternative-chain
 computation networks for private smart contracts, we’ve chosen to
-restrict the Simple  and Signing sMPC keeps to merely generating,
+restrict the Simple and Signing sMPC keeps to merely generating,
 securing, storing, encrypting, and transmitting secrets.  Such
 restrictions help to minimize the attack surface on keeps in a
 production network.
@@ -442,11 +442,11 @@ dead man switch- publishing a secret, under certain contract
 conditions.
 
 Examples of dead man switch applications with keeps include automated
-inheritance (“send my heir my private key if I don’t check in
-quarterly”), arbitration with time limits (“if no decision is made in
-10 blocks, publish a shared secret”), as well as protection for
-leakers (“publish a key to these insurance files if I don’t check
-in”).
+inheritance (``send my beneficiary my private key if I don’t check in
+quarterly''), arbitration with time limits (``if no decision is made in
+10 blocks, publish a shared secret''), as well as protection for
+leakers (``publish a key to these insurance files if I don’t check
+in'').
 
 \subsection{Marketplaces for digital goods}
 
