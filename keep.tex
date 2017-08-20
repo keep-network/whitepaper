@@ -252,7 +252,8 @@ data, using the keep's contents as a key.
 
 In addition to simple pseudorandom numbers, signing keeps will be able
 to generate RSA \cite{mauland2009realizing} and Bitcoin key pairs
-\cite{coinparty}, or be populated with them via secret sharing.
+\cite{gennaro2016threshold,coinparty}, or be populated with them via
+secret sharing.
 
 This means signing keeps will be able to sign and secure contract
 communications on- and off-chain, as well as sign transactions for
@@ -515,11 +516,11 @@ Services like Filecoin \cite{filecoin} and Storj \cite{storj} are
 being built to provide cheap, ubiquitous storage, accessible globally,
 via smart contracts and traditional storage interfaces.
 
-These services offer few privacy guarantees, leaving the onus of file
-encryption on users. Keeps can provide a private bridge to blockchain
-storage. By generating an AES key at keep initialization and providing
-off-chain data access to the keep, smart contracts can use keeps to
-secure files stored on decentralized services.
+These services offer few privacy guarantees by default, leaving the
+onus of file encryption on users. Keeps can provide a private bridge
+to blockchain storage. By generating an AES key at keep initialization
+and providing off-chain data access to the keep, smart contracts can
+use keeps to secure files stored on decentralized services.
 
 \subsection{Banking on public blockchains}
 
