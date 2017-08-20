@@ -101,29 +101,29 @@ Alternatively, a keep can self-populate with pseudorandom data.
 
 \subsubsection{Publishing data on-chain}
 
-The most useful function of a keep is to compute a function over its
-secret and publish the results to the blockchain.
+The purpose of a keep is to compute a function over its secret and
+publish the results to the blockchain.
 
-Initially, keeps will support publishing their secrets on-chain.
-Contracts can request a keep to publish a secret in the clear or
-encrypted with a provided public key. This allows keeps to provide
-functionality that’s difficult in today’s public smart contracts, like
-a secret-exposing dead man switch, useful in a variety of
-decentralized market schemes.
+Initially, keeps will support publishing their secrets on-chain,
+unmodified or encrypted with a contract-provided public key.  This
+enables functionality that’s difficult in today’s public smart
+contracts, like a secret-exposing dead man switch, useful in a variety
+of decentralized market schemes.
 
 Keeps can be extended to use their secret in a variety of other ways,
-including as a key for symmetric encryption and signing.
+including as key material for symmetric encryption and signing.
 
 \subsubsection{Access management}
 
-The creator of a keep can delegate access to the keep.
+The creator of a keep can delegate access to the keep to other
+contracts.
 
-Read and management access can each be granted to contracts, allowing
-another contract to request that a keep’s content be published, or to
-delegate further access to other contracts. Creators can also remove
-their own access.
+Read and management access can each be granted, allowing another
+contract to request that a keep’s content be published, or to delegate
+further access to other contracts. Creators can also revoke their own
+access.
 
-Access management  enables multi-party secret escrow and auditability
+Access management enables multi-party secret escrow and auditability
 of secret access.
 
 \subsubsection{Destruction}
