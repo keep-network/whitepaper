@@ -87,12 +87,50 @@ the public blockchain.
 
 \subsection{Keep operations}
 
+\begin{table*}[t]
+  \centering
+  \begin{tabular}{|rp{10cm}|}
+  \hline
+  \multicolumn{2}{|c|}{\textit{Keep operations}} \\
+  \textbf{Create:} & $Contract_{owner}$ publishes a creation request,
+  including an initial deposit and a public key,
+  $K_{Contract_{owner}}$.\\
+  \textbf{Accept:} & A keep, $Keep_{accepted}$, publishes one or more
+  public keys $K_{Keep_{accepted_i}}$ signalling readiness.\\
+  \textbf{Populate:} & $Contract_{owner}$ publishes an initial
+  secret on-chain, encrypted in total or in shares by one or more
+  $K_{Keep_{accepted_i}}$, or a specification for a secret to be
+  generated.\\
+  \textbf{Grant:} & $Contract_{owner}$ publishes another contract
+  address, $Contract_{delegate}$, and a permission level, $P_{read}$
+  or $P_{admin}$.\\
+  \textbf{Compute:} & $Contract_{owner}$ or $Contract_{delegate}$
+  publishes a function to compute over the secret, $F(S,...)$, as well
+  as other arguments to $F$. Initially $F {\in}
+  \{f_{identity},f_{rsa},f_{ecdsa}\}$, though additional functions are
+  planned.\\
+  \textbf{Results:} & $Keep_{accepted}$ publishes the results
+  of its computation, either in whole or in part, over one or more
+  invocations.\\
+  \textbf{Shutdown:} & $Contract_{owner}$ or $Contract_{delegate}$
+  with permission $P_{admin}$ publishes a shutdown request.\\
+  \hline
+\end{tabular}
+\end{table*}
+
+Though keeps maintain state off-chain, they are provisioned and
+messaged by contracts on-chain. We will describe the keep in terms of
+these on-chain operations. The practical implementation of keeps,
+including security guarantees, will be covered later in the paper
+\ref{eliminatingRisk} \ref{keepProviders}.
+
 \subsubsection{Creation and population}
 
-Contracts request a keep by publishing a record to the blockchain.
-Once a keep is created off-chain, it will respond with a set of public
-keys the calling contract can use to communicate privately with the
-keep.
+A contract, $Contract_{owner}$, requests a keep by publishing a
+request to the blockchain. Once a keep, $Keep_{accepted}$, accepted a
+request and is initialized off-chain, it will respond with a set of
+public keys the calling contract can use to communicate privately with
+the keep.
 
 Once the keep has been created, it can be populated in a number of
 ways. dApps can publish secret data to the blockchain, encrypted by
@@ -105,23 +143,24 @@ The purpose of a keep is to compute a function over its secret and
 publish the results to the blockchain.
 
 Initially, keeps will support publishing their secrets on-chain,
-unmodified or encrypted with a contract-provided public key.  This
-enables functionality that's difficult in today's public smart
-contracts, like a secret-exposing dead man switch, useful in a variety
-of decentralized market schemes.
+unmodified or encrypted with a public key provided by
+$Contract_{owner}$. This enables functionality that's difficult in
+today's public smart contracts, like a secret-exposing dead man
+switch, useful in a variety of decentralized market schemes.
 
 Keeps can be extended to use their secret in a variety of other ways,
 including as key material for symmetric encryption and signing.
 
 \subsubsection{Access management}
 
-The creator of a keep can delegate access to the keep to other
-contracts.
+The owning contract $Contract_{owner}$ of a keep can delegate access
+to the keep to other contracts.
 
 Read and management access can each be granted, allowing another
-contract to request that a keep's content be published, or to delegate
-further access to other contracts. Creators can also revoke their own
-access.
+contract i($Contract_{delegate}$) to request that a keep's content be
+published (read permission, $P_{read}$), or to delegate further access
+to other contracts (admin permission, $P_{admin}$). Owners
+($Contract_{owner}$) can also revoke their own access.
 
 Access management enables multi-party secret escrow and auditability
 of secret access.
@@ -138,10 +177,9 @@ in the paper \ref{uptime}.
 We've described a simple black box for off-chain data storage. The
 standardization of this method of secret management will enable
 secrets to be bought, sold, and transferred on a public blockchain,
-but don't solve third-party risks.
+but doesn't inherently solve third-party risks.
 
-Next, we'll go over how the need for a trusted third party can be
-eliminated.
+Next, we'll describe techniques to elimnate third-party risk.
 
 \subsection{Secure multi party computation}
 
@@ -222,7 +260,7 @@ computation.
 The Keep network will incorporate these ideas into the first
 production-ready sMPC system for a public blockchain.
 
-\section{Keep providers}
+\section{Keep providers} \label{keepProviders}
 
 The Keep network includes a number of different provider types, each
 with their own strengths and tradeoffs. The most important provider,
@@ -243,7 +281,6 @@ The only computation these keeps will run is an implementation of
 distributed RSA \cite{mauland2009realizing} on sMPC, used to publish
 encrypted data to the blockchain.
 
-
 \subsection{Signing sMPC}
 
 The next provider will extend the sMPC keep with two new operations-
@@ -262,7 +299,6 @@ Finally, signing keeps can act as pRNG oracles, significantly
 improving current methods of random number generation on public
 blockchains.
 
-
 \subsection{Trusted third-party}
 
 The third provider is the simplest, and offers fewer security
@@ -275,7 +311,6 @@ asset with zero marginal cost to produce.
 
 TTP keeps can be populated simply by publishing the initial data
 on-chain, encrypted with the keep's public key.
-
 
 \subsubsection{Redundant trusted third-party}
 
