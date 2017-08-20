@@ -41,7 +41,7 @@ users.
 For every financial use case a public blockchain enables, its public
 status restricts another. Bitcoin is touted as a more private payment
 method than the traditional financial system, but those familiar with
-the technology know that while it may be censorship-resistant, it’s
+the technology know that while it may be censorship-resistant, it's
 certainly not private by default \cite{bitcoinPrivacy}. Developers
 introduced to Ethereum quickly learn to adjust their expectations
 \cite{ethereumStackexchange}- all contract state is published to the
@@ -67,13 +67,13 @@ come up: scalability and privacy'' \cite{privacyOnTheBlockchain}.
 Scalability of public blockchains is a hurdle to mainstream adoption.
 Some of the best minds in the cryptocurrency space \cite{lightning}
 \cite{ethereumSharding} \cite{plasma} are working on multiple
-order-of-magnitude improvements. Privacy, however, hasn’t garnered the
+order-of-magnitude improvements. Privacy, however, hasn't garnered the
 same attention, especially in smart contracts.
 
 Basic use cases of smart contracts, including publishing secrets after
 certain criteria are met, assessing borrower risk for a loan, and
 verifying real-world identity on the blockchain, are incredibly
-difficult on today’s public blockchains.
+difficult on today's public blockchains.
 
 \section{Introducing keeps}
 
@@ -96,7 +96,7 @@ keep.
 
 Once the keep has been created, it can be populated in a number of
 ways. dApps can publish secret data to the blockchain, encrypted by
-the keep’s public keys, or send the data to the keep off-chain.
+the keep's public keys, or send the data to the keep off-chain.
 Alternatively, a keep can self-populate with pseudorandom data.
 
 \subsubsection{Publishing data on-chain}
@@ -106,7 +106,7 @@ publish the results to the blockchain.
 
 Initially, keeps will support publishing their secrets on-chain,
 unmodified or encrypted with a contract-provided public key.  This
-enables functionality that’s difficult in today’s public smart
+enables functionality that's difficult in today's public smart
 contracts, like a secret-exposing dead man switch, useful in a variety
 of decentralized market schemes.
 
@@ -119,7 +119,7 @@ The creator of a keep can delegate access to the keep to other
 contracts.
 
 Read and management access can each be granted, allowing another
-contract to request that a keep’s content be published, or to delegate
+contract to request that a keep's content be published, or to delegate
 further access to other contracts. Creators can also revoke their own
 access.
 
@@ -133,14 +133,14 @@ Contracts can request that a keep shut down, and should also handle
 keeps that are terminated unexpectedly, covered in more detail later
 in the paper \ref{uptime}.
 
-\section{Eliminating third-party risk}
+\section{Eliminating third-party risk} \label{eliminatingRisk}
 
-We’ve described a simple black box for off-chain data storage. The
+We've described a simple black box for off-chain data storage. The
 standardization of this method of secret management will enable
 secrets to be bought, sold, and transferred on a public blockchain,
-but don’t solve third-party risks.
+but don't solve third-party risks.
 
-Next, we’ll go over how the need for a trusted third party can be
+Next, we'll go over how the need for a trusted third party can be
 eliminated.
 
 \subsection{Secure multi party computation}
@@ -231,12 +231,12 @@ however, is a novel application of secure multi party computation.
 \subsection{Simple sMPC}
 
 Simple sMPC keeps are backed by n nodes, each of which maintain a
-share of the provided secret, such that the secret can’t be
+share of the provided secret, such that the secret can't be
 reconstructed without all n nodes colluding.
 
 These keeps can be populated securely by divvying up a secret into
 shares via Shamir secret sharing \cite{shamir}, and encrypting each
-share with its respective node’s public key. The encrypted shares can
+share with its respective node's public key. The encrypted shares can
 then be published to the public blockchain, or communicated off-chain.
 
 The only computation these keeps will run is an implementation of
@@ -248,7 +248,7 @@ encrypted data to the blockchain.
 
 The next provider will extend the sMPC keep with two new operations-
 securely generating pseudorandom numbers, and signing and encrypting
-data, using the keep’s contents as a key.
+data, using the keep's contents as a key.
 
 In addition to simple pseudorandom numbers, signing keeps will be able
 to generate RSA \cite{mauland2009realizing} and Bitcoin key pairs
@@ -274,7 +274,7 @@ an on-chain component that needs a secret, or a key protecting an
 asset with zero marginal cost to produce.
 
 TTP keeps can be populated simply by publishing the initial data
-on-chain, encrypted with the keep’s public key.
+on-chain, encrypted with the keep's public key.
 
 
 \subsubsection{Redundant trusted third-party}
@@ -290,7 +290,7 @@ Other keep providers are an area for future work.
 
 Unlike related work on systems like Enigma \cite{enigma} or Hawk
 \cite{hawk}, which use sMPC to build off-chain and alternative-chain
-computation networks for private smart contracts, we’ve chosen to
+computation networks for private smart contracts, we've chosen to
 restrict the Simple and Signing sMPC keeps to merely generating,
 securing, storing, encrypting, and transmitting secrets.  Such
 restrictions help to minimize the attack surface on keeps in a
@@ -336,7 +336,7 @@ minimizing on-chain fees, the security ramifications differ from
 typical two-party channels. These differences are discussed further in
 the next section.
 
-Payment per operation is simpler. Each request to publish a keep’s
+Payment per operation is simpler. Each request to publish a keep's
 contents will require payment of an amount agreed to at the
 initialization of a keep.
 
@@ -347,7 +347,7 @@ termination must be disincentivized.
 
 <proper shutdown protocol>
 
-Any keep that doesn’t respond properly within a certain block count
+Any keep that doesn't respond properly within a certain block count
 threshold to a request will be considered aborted. Aborted keeps will
 forfeit all client deposits that have yet to be disbursed. To avoid
 skewing client incentives, the deposits that have been earned, but not
@@ -357,7 +357,7 @@ returned to the client.
 Volatility in the crypto currency markets can provide a strong
 incentive for a keep provider to improperly terminate a keep. If the
 value of the paid currency drops significantly relative to the cost of
-running a keep, it’s in a provider’s best interest to devote their
+running a keep, it's in a provider's best interest to devote their
 limited resources to a better-paying client.
 
 To counter this issue, keep providers will need a protocol to
@@ -368,7 +368,7 @@ optionally re-negotiate fees for a running keep.
 Existing open-source sMPC frameworks, such as VIFF \cite{viff}, are
 secure against active attacks in the presence of a ¾ supermajority of
 honest nodes. In such an attack, keeps can be forced to return
-malformed data, but secrets can’t be compromised unless all nodes with
+malformed data, but secrets can't be compromised unless all nodes with
 a unique share backing an sMPC keep are colluding- an extremely high
 bar for a Sybil attack.
 
@@ -395,14 +395,14 @@ ensure their overwhelming selection backing new keeps.
 Second, keep redundancy can be used to further minimize availability
 disruptions \cite{blockchainMultipartyComputation}. All nodes can be
 required to include a deposit when they publish their results. If
-their results can’t be verified by the included SPDZ proof, their
+their results can't be verified by the included SPDZ proof, their
 deposit is forfeit to competing nodes.  This idea can be generalized
 to work with RTTP and sMPC keeps.
 
 \section{High-level network design}
 
 To bring these components together into a functional network,
-initially built against the Ethereum blockchain, we’ll introduce a few
+initially built against the Ethereum blockchain, we'll introduce a few
 more ideas.
 
 \subsection{The keep market}
@@ -418,17 +418,17 @@ block, price per operation, and required functionality.
 
 The native network token will be required for providers to participate
 in the keep market. Requiring a native token, rather than the
-underlying blockchain’s currency, means providers will suffer from
+underlying blockchain's currency, means providers will suffer from
 negative externalities in the presence of malicious behavior.
 
 Keep operations can be paid for with the native token, or with the
-underlying blockchain’s currency, based on the keep market.
+underlying blockchain's currency, based on the keep market.
 
 \subsection{The result registry}
 
 Keeps will offer a number of methods to publish to the public
 blockchain. In the case where keeps publish to a smart contract
-provided by the keep owner, coordination is simple. In uses that don’t
+provided by the keep owner, coordination is simple. In uses that don't
 have a natural contract to communicate with, a result registry will be
 provided as a default to simplify keep and owner coordination.
 
@@ -442,10 +442,10 @@ dead man switch- publishing a secret, under certain contract
 conditions.
 
 Examples of dead man switch applications with keeps include automated
-inheritance (``send my beneficiary my private key if I don’t check in
+inheritance (``send my beneficiary my private key if I don't check in
 quarterly''), arbitration with time limits (``if no decision is made in
 10 blocks, publish a shared secret''), as well as protection for
-leakers (``publish a key to these insurance files if I don’t check
+leakers (``publish a key to these insurance files if I don't check
 in'').
 
 \subsection{Marketplaces for digital goods}
@@ -531,7 +531,7 @@ service provided by most banks.
 
 There are a number of sensitive variables involved in the lending
 process. Borrower credit scores are sensitive; risk assessment is
-highly competitive; the terms of a loan aren’t typically made public.
+highly competitive; the terms of a loan aren't typically made public.
 
 Keep providers that execute generic private smart contracts can
 protect scores and the risk assessment process, while maintaining
