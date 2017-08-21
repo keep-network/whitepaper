@@ -268,9 +268,9 @@ however, is a novel application of secure multi party computation.
 
 \subsection{Simple sMPC}
 
-Simple sMPC keeps are backed by n nodes, each of which maintain a
+Simple sMPC keeps are backed by $n$ nodes, each of which maintain a
 share of the provided secret, such that the secret can't be
-reconstructed without all n nodes colluding.
+reconstructed without all $n$ nodes colluding.
 
 These keeps can be populated securely by divvying up a secret into
 shares via Shamir secret sharing \cite{shamir}, and encrypting each
@@ -288,9 +288,9 @@ securely generating pseudorandom numbers, and signing and encrypting
 data, using the keep's contents as a key.
 
 In addition to simple pseudorandom numbers, signing keeps will be able
-to generate RSA \cite{mauland2009realizing} and Bitcoin key pairs
-\cite{gennaro2016threshold,coinparty}, or be populated with them via
-secret sharing.
+to generate RSA \cite{mauland2009realizing} and Bitcoin
+\cite{gennaro2016threshold,coinparty} key pairs, or be populated with
+them via secret sharing.
 
 This means signing keeps will be able to sign and secure contract
 communications on- and off-chain, as well as sign transactions for
@@ -302,44 +302,49 @@ blockchains.
 
 \subsection{Trusted third-party}
 
-The third provider is the simplest, and offers fewer security
-guarantees. Trusted third-party (TTP) keeps are backed by a single
-node, which has full access to secret material. These keeps are
-suitable for lower-value on-chain applications, and will be less
-expensive than sMPC-backed keeps. Consider, for example, a game with
-an on-chain component that needs a secret, or a key protecting an
-asset with zero marginal cost to produce.
+In the case where $n = 1$, sMPC keeps no longer provide
+confidentiality guarantees. In that case, a keep node is acting as a
+trusted third-party.
 
-TTP keeps can be populated simply by publishing the initial data
-on-chain, encrypted with the keep's public key.
-
-\subsubsection{Redundant trusted third-party}
-
-Redundant trusted third-party (RTTP) keeps are a generalization of TTP
-keeps, composed of n nodes that are each given a copy of the secret.
-RTTP keeps can use a higher n for better availability and data
-integrity guarantees, at the expense of confidentiality.
+These keeps are suitable for lower-value applications and testing, and
+will be significantly less expensive than more secure variants.
 
 \subsection{Future providers}
 
-Other keep providers are an area for future work.
+The off-chain keep pattern is flexible enough to include a variety of
+other pluggable providers, each with their own unique benefits.
+
+\subsubsection{Secure hardware}
+
+Keeps backed by secure hardware can be used to lower the cost of
+securing private data by verifying that only signed code is run
+against privileged data.
+
+Instead of requiring $n$ nodes to safely split a secret, a secret can
+be sent to a single node that's properly responded to a challenge,
+proving it's running signed code. Not only are fewer nodes required,
+but these keeps wouldn't suffer the computation overhead of secure
+multi-party computation.
+
+This sort of security is fundamentally weaker than that provided by
+secure multi-party computation. If a single secure hardware
+manufacturer is compromised, it puts all nodes using that hardware at
+risk, shifting the threat model. The cost and benefit of this approach
+will depend on the application.
+
+\subsubsection{Private smart contracts}
 
 Unlike related work on systems like Enigma \cite{enigma} or Hawk
 \cite{hawk}, which use sMPC to build off-chain and alternative-chain
 computation networks for private smart contracts, we've chosen to
-restrict the Simple and Signing sMPC keeps to merely generating,
-securing, storing, encrypting, and transmitting secrets.  Such
-restrictions help to minimize the attack surface on keeps in a
-production network.
+restrict the initial sMPC keeps to generating, securing, storing,
+encrypting, and transmitting secrets. Such restrictions help to
+minimize the attack surface on keeps in a production network.
 
 In later work, sMPC schemes can be used to build more feature-rich
 keeps. These keeps will enable complex use cases, like operating
-private ledgers operating on public blockchains, or running
-third-party code trustlessly on private data.
-
-The off-chain keep pattern is also flexible enough to include a
-variety of other providers, each with their own unique benefits-
-including using secure or otherwise specialized hardware.
+private ledgers against public blockchains, or running third-party
+code trustlessly on private data.
 
 \section{Incentivizing keep providers} \label{incentivizingProviders}
 
@@ -411,10 +416,10 @@ bar for a Sybil attack.
 Recent approaches using SPDZ proofs \cite{spdz} anchored on the
 blockchain \cite{bitcoinSmpc, blockchainMultipartyComputation} make
 such correctness attacks impossible, even if all nodes backing a keep
-are compromised. sMPC and trusted third-party keeps will publish
-proofs to the public blockchain that can be used to verify
-correctness. The threat of active attacks is then reduced to
-disrupting keep availability, rather than returning malformed data.
+are compromised. sMPC keeps will publish proofs to the public
+blockchain that can be used to verify correctness. The threat of
+active attacks is then reduced to disrupting keep availability, rather
+than returning malformed data.
 
 We address the issue of network disruption by introducing two
 incentives to keep providers, making active attacks on data
@@ -432,8 +437,7 @@ Second, keep redundancy can be used to further minimize availability
 disruptions \cite{blockchainMultipartyComputation}. All nodes can be
 required to include a deposit when they publish their results. If
 their results can't be verified by the included SPDZ proof, their
-deposit is forfeit to competing nodes.  This idea can be generalized
-to work with RTTP and sMPC keeps.
+deposit is forfeit to competing nodes.
 
 \section{High-level network design}
 
