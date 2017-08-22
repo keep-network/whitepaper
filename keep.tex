@@ -73,11 +73,98 @@ certain criteria are met, assessing borrower risk for a loan, and
 signing messages and transactions, are incredibly difficult on today's
 public blockchains.
 
+\subsection{Existing approaches}
+
+In practice, developers have found a number of ways to build
+decentralized applications that use private data.
+
+\subsubsection{The hash-reveal pattern}
+
+A common pattern on public blockchains is to keep private data with
+the application's users. Contracts can receive and manipulate hashes
+of private data, while users withold the original until revealing
+the private data off-chain. We call this the ``hash-reveal'' pattern.
+
+For many applications, this approach is satisfactory. There's a clear
+privacy benefit over typical web applications- no centralized
+third-party database is at risk. Spreading storage across many users
+means a distributed, diverse target for attackers.
+
+There are significant downsides, however. The hash-reveal pattern
+requires that all users party to a transaction be online, monitoring
+the system, providing private data when necessary, and validating
+hashes against private data provided by other users.
+
+This requirement makes the hash-reveal pattern inflexible for complex
+protocols, and unsuitable for systems that don't revolve solely around
+active human participants, like decentralized autonomous organizations
+(DAOs).
+
+\subsubsection{Private blockchains}
+
+Another response to privacy restrictions, primarily from the finance
+industry, has been to build private blockchains, or so-called
+``permissioned ledgers''.
+
+These systems operate in a trusted or semi-trusted manner. Instead of
+using proof-of-work or other consensus mechanisms designed with an
+adversarial network in mind, they can use systems like RAFT to reach
+consensus.
+
+One such system, J.P. Morgan's Quorum \cite{quorum}, is a fork of
+Ethereum supporting private contract state and messaging between
+network participants. Another, Microsoft's recently announced Coco
+Framework \cite{coco}, provides data privacy atop an existing private
+blockchain.
+
+These systems solve privacy at the expense of many of the benefits of
+a public blockchain- trustlessness, public accountability,
+censorship-resistance, and permissionless innovation.
+
+\subsubsection{Zero-knowledge proofs}
+
+Zero-knowledge proofs have been leveraged to maintain privacy on
+public blockchains- most famously, by the Zcash \cite{zcash} project.
+
+Zero-knowledge proofs allow one party, the prover, to prove a
+statement to another party, the verifier, without revealing the
+knowledge used to prove that statement.  For example, a prover could
+show that they have access to a private key by encrypting a message
+chosen by a verifier. The proof can be trivially checked by the
+verifier by decrypting the cyphertext with the public key. The private
+key, however, remains secret.
+
+More relevant to the domain, zero-knowledge proofs can be used for a
+party to prove they have access to funds, or in the case of Zcash, for
+a party to prove to miners that a transaction is valid according to
+the consensus rules of the network.
+
+Zero-knowledge proofs can be used to construct private financial
+systems on a public blockchain. On their own, however, they stop short
+of allowing safe delegation of private data from one party to another,
+and suffer the same always-online requirements of the ``hash-reveal''
+pattern.
+
+Zero-knowledge proofs are a powerful cryptographic tool, and can be
+used in conjunction with other techniques to safely delegate secret
+access and computation \ref{sMPC}.
+
+\subsection{Public applications, private data}
+
+None of these techniques adequately address how to build a publicly
+verifiable, decentralized, censorship-resistant application that makes
+use of private data.
+
+Consider contracts to reveal a secret in case of a dispute between two
+parties, to sign a message verifying contract identity off-chain, or
+to securely encrypt files \footnote{We go over applications in more
+depth later in the article \ref{applications}}.
+
 \section{Introducing keeps}
 
 To solve this mismatch between the transparency of public blockchains,
-and the need of many smart contracts for private data, we introduce
-the idea of {\em keeps}.
+and the need of many autonomous smart contracts for private data, we
+introduce the {\em keep}.
 
 A keep is an off-chain container for private data. Keeps allow
 contracts to manage and use private data without exposing the data to
@@ -179,7 +266,7 @@ but doesn't inherently solve third-party risks.
 
 Next, we'll describe techniques to elimnate third-party risk.
 
-\subsection{Secure multi party computation}
+\subsection{Secure multi party computation} \label{sMPC}
 
 Secure multi party computation (sMPC) is a type of cryptographic
 system where a computation is distributed across multiple
@@ -470,7 +557,7 @@ provided by the keep owner, coordination is simple. In uses that don't
 have a natural contract to communicate with, a result registry will be
 provided as a default to simplify keep and owner coordination.
 
-\section{Applications}
+\section{Applications} \label{applications}
 
 \subsection{Dead man switch}
 
