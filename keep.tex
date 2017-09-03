@@ -494,6 +494,7 @@ To counter this issue, keep providers will need a protocol to
 optionally re-negotiate fees for a running keep.
 
 \subsection{Concerns with active attacks}
+\label{activeAttacks}
 
 Existing open-source sMPC frameworks, such as VIFF \cite{viff}, are
 secure against active attacks in the presence of a ¾ supermajority of
@@ -518,7 +519,7 @@ First, keep providers will be required to prove their holdings in a
 token native to the system. Significant disruption of the network
 should lead to a drop in the value of the token, incentivizing
 provider honesty, lest they devalue their holdings. This scheme also
-provides resistance to Sybil attacks- an active attacker would need to
+provides resistance to Sybil attacks--- an active attacker would need to
 obtain an outsize portion of all tokens locked up by keep providers to
 ensure their overwhelming selection backing new keeps.
 
@@ -534,7 +535,17 @@ To bring these components together into a functional network,
 initially built against the Ethereum blockchain, we'll introduce a few
 more ideas.
 
+\subsection{The Keep network token}
+
+The native network token will be required for providers to
+participate. Requiring a native token, rather than the underlying
+blockchain's currency, means providers will suffer from negative
+externalities in the presence of malicious behavior
+\ref{activeAttacks}, and staking strengthens the system against Sybil
+attacks \ref{fairKeepSelection}.
+
 \subsection{The keep market}
+\label{fairKeepSelection}
 
 Different keep types will naturally incur different costs, and offer
 differing guarantees and functionality to contract developers. At a
@@ -542,17 +553,6 @@ given time, the capacity available on the keep network will also be
 limited capacity.. For this reason, a market will need to be developed
 that matches keep providers to contracts based on bids for price per
 block, price per operation, and required functionality.
-
-\subsection{The Keep network token}
-
-The native network token will be required for providers to participate
-in the keep market. Requiring a native token, rather than the
-underlying blockchain's currency, means providers will suffer from
-negative externalities in the presence of malicious behavior.
-
-Keep operations can be paid for with the native token, or with the
-underlying blockchain's currency, based on the keep market.
-
 \subsection{The result registry}
 
 Keeps will offer a number of methods to publish to the public
