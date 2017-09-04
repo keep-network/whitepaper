@@ -615,7 +615,62 @@ Fortunately, the Dfinity team has solved these issues with their
 random beacon design, based on a concept they call threshold relay
 \cite{thresholdRelay}.
 
-\subsection{The result registry}
+\subsubsection{Threshold relay}
+
+This work relies on the idea of threshold secret sharing schemes---
+secret sharing schemes that retain confidentiality up to some
+threshold $t$ of honest actors.
+
+Threshold signatures are a related idea. A threshold signature is a
+signature across $n$ parties that requires some minimum $t$ actively
+participating to sign. It's a similar idea to "multi-sig" as deployed
+in cryptocurrencies today.
+
+Traditional multi-sig, however, requires a smart contract on the
+blockchain to validate each signature and release funds. Threshold
+signature schemes actually require a threshold $t$ to construct a
+signature at all, removing a layer of complexity and coordination
+between parties.
+
+The use of threshold signatures means a number of participating
+signers in a signing group can be unavailable, and the signature will
+still succeed in the presence of $t$ functioning signers. This
+provides some of our beacon's required resilience in the face of
+failing or misbehaving nodes.
+
+If threshold signatures sound familiar, it might be because they're a
+core functionality keeps provide. For example, a keep signing a
+Bitcoin transaction does so using threshold ECDSA.
+
+A threshold relay is a way to chain threshold signatures to create a
+random beacon. Participants in a threshold relay form threshold
+groups. These groups generate new public keys that identify the group
+and correspond to a newly generated threshold private key, split
+across the participants.
+
+As providers join the network, they will form threshold groups. These
+groups will then sign a piece of random data from a trusted party,
+bootstrapping the relay. The resulting signature provides the random
+data for the next iteration, which can be verified by the rest of the
+network participants and rejected if invalid. Each iteration, a new
+signing group is chosen by the previous iteration's random value. As
+all groups sign the previous iteration's value, if a signature that's
+chosen is invalid, the signature from the next group in line can be
+chosen instead.
+
+\subsubsection{Keep selection group}
+
+Our threshold relay system will be composed of keep providers seeking
+to be chosen to back a new keep, capturing the fees from that keep.
+
+Each block will include a random signature, published by the nominated
+keep selection group. Any keeps that require new nodes will have their
+providers chosen randomly, using the beacon value from the last block.
+
+In this way, we can ensure fair chances to all staked keep providers,
+keeping the cost of a Sybil attack high.
+
+\section{The result registry}
 
 Keeps will offer a number of methods to publish to the public
 blockchain. In the case where keeps publish to a smart contract
@@ -623,7 +678,8 @@ provided by the keep owner, coordination is simple. In uses that don't
 have a natural contract to communicate with, a result registry will be
 provided as a default to simplify keep and owner coordination.
 
-\section{Applications} \label{applications}
+\section{Applications}
+\label{applications}
 
 \subsection{Dead man switch}
 
