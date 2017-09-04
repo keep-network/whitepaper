@@ -85,8 +85,10 @@ decentralized applications that use private data.
 
 A common pattern on public blockchains is to keep private data with
 the application's users. Contracts can receive and manipulate hashes
-of private data, while users withold the original until revealing
-the private data off-chain. We call this the ``hash-reveal'' pattern.
+of private data, more generally called commitments
+\cite{commitmentScheme}, while users withold the original until
+revealing the private data off-chain. We call this the ``hash-reveal''
+pattern.
 
 For many applications, this approach is satisfactory. There's a clear
 privacy benefit over typical web applications- no centralized
