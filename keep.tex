@@ -617,6 +617,39 @@ random beacon design, based on a concept they call threshold relay
 
 \subsubsection{Threshold relay}
 
+\begin{table*}[t]
+  \centering
+  \begin{tabular}{|rp{10cm}|}
+  \hline
+  \multicolumn{2}{|c|}{\textit{Iterative threshold signatures for
+  randomness on existing chains}} \\
+  \textbf{Registration:} & As providers join the network, they
+  register with at least one threshold group $G_i$ of all groups $G$,
+  generating a share of the group's private key, $s_i$. Threshold groups are
+  capped at $c$ members, and may intersect. Groups that have reached
+  this maximum size publish their public key to the blockchain. We'll
+  designate such groups as $G_{registered}$. \\
+  \textbf{Trusted setup:} & A trusted party posts a random value
+  $r_0$ to the blockchain as the beacon's first output. \\
+  \textbf{Bootstrapping:} & $mod(r_{0}, |G_{registered}|)$ is
+  used to select a registered threshold group, $G_i$, from
+  $G_{registered}$. $G_i$ signs $r_0$ and publishes the
+  result, $r_1 = threshold(r_0, s_{0\rightarrow{t}})$ where
+  $s_{0\rightarrow{t}}$ is the minimal shares necessary the the group
+  to produce a signature. \\
+  \textbf{Iteration:} & Each block published on the chain will include
+  a signature from $G_{registered}$ of the random value $r_i$. As the
+  chain grows, the signing threshold groups will change based on
+  provider availability. If any group is non-responsive up to its
+  threshold $t$, the group is removed from $G_{registered}$. \\
+  \textbf{Failure:} & Each iteration is an opportunity for a
+  group to fail to generate a valid signature. If a group $G_i$ fails
+  to sign the last iteration's random value, $G_{i+1}$ will be used
+  instead. \\
+  \hline
+\end{tabular}
+\end{table*}
+
 This work relies on the idea of threshold secret sharing schemes---
 secret sharing schemes that retain confidentiality up to some
 threshold $t$ of honest actors.
