@@ -531,28 +531,89 @@ deposit is forfeit to competing nodes.
 
 \section{High-level network design}
 
-To bring these components together into a functional network,
-initially built against the Ethereum blockchain, we'll introduce a few
-more ideas.
+Deploying sMPC-based privacy on a public blockchain requires
+supporting infrastructure. To build a functional privacy network
+against Ethereum, our first target blockchain, we'll introduce
+components to ensure fair keep node selection, report results, and
+incentivize network actors.
 
 \subsection{The Keep network token}
 
-The native network token will be required for providers to
-participate. Requiring a native token, rather than the underlying
-blockchain's currency, means providers will suffer from negative
-externalities in the presence of malicious behavior
-\ref{activeAttacks}, and staking strengthens the system against Sybil
-attacks \ref{fairKeepSelection}.
+The native network token, \textit{KEEP}, will be required for
+providers to participate.
 
-\subsection{The keep market}
+To be chosen to provide a node for a new keep, a provider must lock up
+a minimum stake in KEEP tokens, using a shared staking contract.
+
+At any time, a provider can choose to retrieve their stake--- for
+example, to liquidate their position. All withdrawals, however, will
+be subject to a two-week waiting period to disincentive providers from
+quickly staking and withdrawing their position, which could have
+adverse effects on running keeps and fair keep selection.
+
+Requiring a native token, rather than the underlying blockchain's
+currency, means providers will suffer from negative externalities in
+the presence of malicious behavior \ref{activeAttacks}. This sort of
+staking also strengthens the system against Sybil attacks
+\ref{fairKeepSelection}.
+
+\subsection{Ensuring fair keep selection}
 \label{fairKeepSelection}
 
-Different keep types will naturally incur different costs, and offer
-differing guarantees and functionality to contract developers. At a
-given time, the capacity available on the keep network will also be
-limited capacity.. For this reason, a market will need to be developed
-that matches keep providers to contracts based on bids for price per
-block, price per operation, and required functionality.
+Initially, the network was meant to include an on-chain marketplace to
+match contracts requesting keeps and keep providers.
+
+Markets solve a number of issues, including keep price discovery
+and capacity provisioning. Unfortunately, on-chain marketplaces also mean the
+provider matching process can be gamed. A clever attacker could
+manipulate a market, giving them an unfair advantage to be chosen for
+a particular keep. Essentially, an ask/bid market opens the network to
+Sybil attacks.
+
+In lieu of a market, we need a fair keep selection mechanism.
+
+\subsubsection{Random beacons}
+
+The best way to select providers for a new keep is with a fair coin
+toss. Unfortunately, Ethereum only supports deterministic functions.
+Contracts that require a random number often rely on a trusted oracle.
+
+A system is only as decentralized as its most centralized component.
+Relying on a trusted third party for such a core function of the
+project isn't an acceptable risk.
+
+Instead, we can utilize our keep providers as a decentralized source
+of entropy. All staked providers can be required to take part in the
+random number generation process.
+
+There are a few design considerations for such a system
+\begin{itemize}
+  \item Providers can't be allowed an unfair advantage over each other
+      in the node selection process.
+  \item Each block on the public chain will require at least one
+      random number of sufficient size. Today's Ethereum block time is
+      25 seconds, but that will likely change significantly in the
+      future. The RNG process needs to be fast enough to support much
+      shorter block time, if necessary.
+  \item RNG needs to be resilient to node failure. Failure in
+      production means no new keeps can be created, so resilience
+      to partitions between providers as well as against active denial
+      of service attacks is desirable.
+  \item While not a hard system requirement, providing the Ethereum
+      network with a trusted source of randomness will also be a great
+      boon to other projects.
+\end{itemize}
+
+Most distributed key generation schemes are too slow or prone to
+manipulation to be considered. Any scheme we choose should provide
+good performance, regardless of the number of particating providers.
+Instead, most generation schemes require rounds of communication
+between participants, slowing down the key generation process and
+providing a large surface for communication failure.
+
+Fortunately, the Dfinity team has solved these issues with their
+random beacon design, based on a concept they call threshold relay.
+
 \subsection{The result registry}
 
 Keeps will offer a number of methods to publish to the public
