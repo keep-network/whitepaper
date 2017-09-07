@@ -637,7 +637,9 @@ random beacon design, based on a concept they call threshold relay
   $G_{registered}$. $G_i$ signs $r_0$ and publishes the
   result, $r_1 = threshold(r_0, s_{0\rightarrow{t}})$ where
   $s_{0\rightarrow{t}}$ is the minimal shares necessary the the group
-  to produce a signature. \\
+  to produce a signature. Note that $threshold(...)$ must be a
+  deterministic signature scheme to avoid share withholding attacks
+  leading to a biased output. \\
   \textbf{Iteration:} & Each block published on the chain will include
   a signature from $G_{registered}$ of the random value $r_i$. As the
   chain grows, the signing threshold groups will change based on
@@ -691,6 +693,11 @@ invalid. Each iteration, a new signing group is chosen by the previous
 iteration's random value. As all groups sign the previous iteration's
 value, if a signature that's chosen is invalid, the signature from the
 next group in line can be chosen instead.
+
+Importantly, the threshold signature scheme needs to be deterministic
+to prevent individual shareholders from biasing the signature outcome
+in their favor. BLS signatures \cite{BLS} have been used in related
+work.
 
 \subsubsection{Keep selection group}
 
