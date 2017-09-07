@@ -560,15 +560,16 @@ staking also strengthens the system against Sybil attacks
 \subsection{Ensuring fair keep selection}
 \label{fairKeepSelection}
 
-Initially, the network was meant to include an on-chain marketplace to
-match contracts requesting keeps and keep providers.
+Contracts requesting keeps and keep providers need to be matched. An
+ideal system would enable price discovery, incentivizing new providers
+to join if capacity is low, across different keep types.
 
-Markets solve a number of issues, including keep price discovery
-and capacity provisioning. Unfortunately, on-chain marketplaces also mean the
-provider matching process can be gamed. A clever attacker could
+This matching problem is a great fit for a market. Unfortunately,
+on-chain markets are a difficult problem, prone to complexity, miner
+frontrunning, and orderbook manipulation. A clever attacker could
 manipulate a market, giving them an unfair advantage to be chosen for
-a particular keep. Essentially, an ask/bid market opens the network to
-Sybil attacks.
+a particular keep. Essentially, an two-sided market would expose the
+network to Sybil attacks.
 
 In lieu of a market, we need a fair keep selection mechanism.
 
@@ -682,14 +683,14 @@ and correspond to a newly generated threshold private key, split
 across the participants.
 
 As providers join the network, they will form threshold groups. These
-groups will then sign a piece of random data from a trusted party,
-bootstrapping the relay. The resulting signature provides the random
-data for the next iteration, which can be verified by the rest of the
-network participants and rejected if invalid. Each iteration, a new
-signing group is chosen by the previous iteration's random value. As
-all groups sign the previous iteration's value, if a signature that's
-chosen is invalid, the signature from the next group in line can be
-chosen instead.
+groups will then sign a piece of random data, initially provided by
+early network contributors, to bootstrap the relay. The resulting
+signature provides the random data for the next iteration, which can
+be verified by the rest of the network participants and rejected if
+invalid. Each iteration, a new signing group is chosen by the previous
+iteration's random value. As all groups sign the previous iteration's
+value, if a signature that's chosen is invalid, the signature from the
+next group in line can be chosen instead.
 
 \subsubsection{Keep selection group}
 
