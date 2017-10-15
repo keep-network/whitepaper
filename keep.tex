@@ -553,7 +553,7 @@ a minimum stake in KEEP tokens, using a shared staking contract.
 
 At any time, a provider can choose to retrieve their stake--- for
 example, to liquidate their position. All withdrawals, however, will
-be subject to a two-week waiting period to disincentive providers from
+be subject to a two-week waiting period to disincentivize providers from
 quickly staking and withdrawing their position, which could have
 adverse effects on running keeps and fair keep selection.
 
@@ -574,7 +574,7 @@ This matching problem is a great fit for a market. Unfortunately,
 on-chain markets are a difficult problem, prone to complexity, miner
 frontrunning, and orderbook manipulation. A clever attacker could
 manipulate a market, giving them an unfair advantage to be chosen for
-a particular keep. Essentially, an two-sided market would expose the
+a particular keep. Essentially, a two-sided market would expose the
 network to Sybil attacks.
 
 In lieu of a market, we need a fair keep selection mechanism.
@@ -613,7 +613,7 @@ There are a few design considerations for such a system
 
 Most distributed key generation schemes are too slow or prone to
 manipulation to be considered. Any scheme we choose should provide
-good performance, regardless of the number of particating providers.
+good performance, regardless of the number of participating providers.
 Instead, most generation schemes require rounds of communication
 between participants, slowing down the key generation process and
 providing a large surface for communication failure.
@@ -642,7 +642,7 @@ random beacon design, based on a concept they call threshold relay
   used to select a registered threshold group, $G_i$, from
   $G_{registered}$. $G_i$ signs $r_0$ and publishes the
   result, $r_1 = threshold(r_0, s_{0\rightarrow{t}})$ where
-  $s_{0\rightarrow{t}}$ is the minimal shares necessary the the group
+  $s_{0\rightarrow{t}}$ is the minimal shares necessary for the group
   to produce a signature. Note that $threshold(...)$ must be a
   deterministic signature scheme to avoid share withholding attacks
   leading to a biased output. \\
@@ -749,7 +749,7 @@ settling off-chain. Keeps make marketplaces for digital goods, like
 audio and video files, straightforward.
 
 Without keeps, each transfer of a private digital good requires one or
-more hash-reveal constructions on-chain. More complex scenarioes
+more hash-reveal constructions on-chain. More complex scenarios
 that require escrow, arbitrators, and other parties who might need
 access to the transfered digital good will need ${n^2}$ on-chain
 transactions to maintain security. They also require each party to be
