@@ -164,7 +164,7 @@ pattern.
 
 Zero-knowledge proofs are a powerful cryptographic tool, and can be
 used in conjunction with other techniques to safely delegate secret
-access and computation \ref{sMPC}.
+access and computation (see section \ref{sMPC}).
 
 \subsection{Public applications, private data}
 
@@ -175,7 +175,7 @@ use of private data.
 Consider contracts to reveal a secret in case of a dispute between two
 parties, to sign a message verifying contract identity off-chain, or
 to securely encrypt files \footnote{We go over applications in more
-depth later in the article \ref{applications}}.
+depth later in section \ref{applications}}.
 
 \section{Introducing keeps}
 
@@ -223,8 +223,8 @@ the public blockchain.
 Though keeps maintain state off-chain, they are provisioned and
 messaged by contracts on-chain. We will describe the keep in terms of
 these on-chain operations. The practical implementation of keeps,
-including security guarantees, will be covered later in the paper
-\ref{eliminatingRisk} \ref{keepProviders}.
+including security guarantees, is covered in sections \ref{eliminatingRisk}
+and \ref{keepProviders}.
 
 \subsubsection{Creation and population}
 
@@ -271,8 +271,8 @@ of secret access.
 
 Depending on the use case, keeps can be long- or short-lived.
 Contracts can request that a keep shut down, and should also handle
-keeps that are terminated unexpectedly, covered in more detail later
-in the paper \ref{uptime}.
+keeps that are terminated unexpectedly, scenarios which are covered in more
+detail later in section \ref{uptime}.
 
 \section{Eliminating third-party risk} \label{eliminatingRisk}
 
@@ -345,7 +345,7 @@ adversarial scenarioes. By using a public blockchain as an immutable
 ledger, sMPC can be made secure in the face of a dishonest
 supermajority \cite{spdz}, and with the requirement of a network
 token, can be made strongly Sybil-resistant
-\ref{incentivizingProviders}.
+(see section \ref{incentivizingProviders}).
 
 For these reasons, sMPC and blockchains are a natural fit. In the
 smart contract space, sMPC has been proposed before as a privacy
@@ -557,9 +557,9 @@ adverse effects on running keeps and fair keep selection.
 
 Requiring a native token, rather than the underlying blockchain's
 currency, means providers will suffer from negative externalities in
-the presence of malicious behavior \ref{activeAttacks}. This sort of
-staking also strengthens the system against Sybil attacks
-\ref{fairKeepSelection}.
+the presence of malicious behavior (see section \ref{activeAttacks}). This sort
+of staking also strengthens the system against Sybil attacks (see section
+\ref{fairKeepSelection}).
 
 \subsection{Ensuring fair keep selection}
 \label{fairKeepSelection}
