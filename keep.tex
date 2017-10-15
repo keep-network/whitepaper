@@ -229,10 +229,10 @@ and \ref{keepProviders}.
 \subsubsection{Creation and population}
 
 A contract, $Contract_{owner}$, requests a keep by publishing a
-request to the blockchain. Once a keep, $Keep_{accepted}$, accepted a
-request and is initialized off-chain, it will respond with a set of
-public keys the calling contract can use to communicate privately with
-the keep.
+request to the blockchain. Once a keep, $Keep_{accepted}$, has accepted a
+request and finished initializing off-chain, it will respond to the request
+with a set of public keys the calling contract can use to communicate privately
+with the keep.
 
 Once the keep has been created, it can be populated in a number of
 ways. dApps can publish secret data to the blockchain, encrypted by
@@ -281,7 +281,7 @@ standardization of this method of secret management will enable
 secrets to be bought, sold, and transferred on a public blockchain,
 but doesn't inherently solve third-party risks.
 
-Next, we'll describe techniques to elimnate third-party risk.
+Next, we'll describe techniques to eliminate third-party risk.
 
 \subsection{Secure multi party computation} \label{sMPC}
 
@@ -341,7 +341,7 @@ security model. Existing sMPC solutions only maintain security in the
 face of an honest majority of parties.
 
 The advent of the blockchain enables secure usage of sMPC in
-adversarial scenarioes. By using a public blockchain as an immutable
+adversarial scenarios. By using a public blockchain as an immutable
 ledger, sMPC can be made secure in the face of a dishonest
 supermajority \cite{spdz}, and with the requirement of a network
 token, can be made strongly Sybil-resistant
