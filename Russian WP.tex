@@ -542,66 +542,78 @@ returned to the client.
 \subsection{Опасения относительно активных атак}
 \label{activeAttacks}
 
-Existing open-source sMPC frameworks, such as VIFF \cite{viff}, are
-secure against active attacks in the presence of a ¾ supermajority of
-honest nodes. In such an attack, keeps can be forced to return
-malformed data, but secrets can't be compromised unless all nodes with
-a unique share backing an sMPC keep are colluding- an extremely high
-bar for a Sybil attack.
+Существующие работы sMPC открытого доступа, такие как VIFF \cite{viff}, 
+являются надёжными в случае активных атак только при условии, 
+что большинство нод добросовестны.
+В таких атаках, хранилища могут быть принуждены выдать неверно 
+сформулированные данные, но секретная информация может быть 
+скомпрометирована только в случае если все ноды, имеющие свою долю 
+секретной информации, поддерживающие хранилища sMPC, сговорятся, 
+что крайне маловерятно, следовательно, это делает атаки Sybil 
+практически невозможными.
 
-Recent approaches using SPDZ proofs \cite{spdz} anchored on the
-blockchain \cite{bitcoinSmpc, blockchainMultipartyComputation} make
-such correctness attacks impossible, even if all nodes backing a keep
-are compromised. sMPC keeps will publish proofs to the public
-blockchain that can be used to verify correctness. The threat of
-active attacks is then reduced to disrupting keep availability, rather
-than returning malformed data.
+Недавние решения с использованием доказательств SPDZ \cite{spdz} 
+закрепленных на блокчейне \cite{bitcoinSmpc, blockchainMultipartyComputation} 
+елают подобные атаки невозможными, даже если все вовлеченные ноды 
+keep скомпрометированы. Хранилища sMPC будут публиковать 
+доказательства в паблик блокчейн, которые могут быть использованы 
+для подтверждения истинности. Угроза активных атак в таком случае 
+сводится только лишь к нарушению статуса доступности хранилищ в 
+сети, а не к выдаче неверных данных.
 
-We address the issue of network disruption by introducing two
-incentives to keep providers, making active attacks on data
-availability impractically expensive.
+Мы решаем проблему разрывa соединения сети, внедряя два 
+экономических стимула для  провайдеров, делая тем самым 
+активные атаки на доступность данных дорогостоящими, и, тем 
+самым, непрактичными.
 
-First, keep providers will be required to prove their holdings in a
-token native to the system. Significant disruption of the network
-should lead to a drop in the value of the token, incentivizing
-provider honesty, lest they devalue their holdings. This scheme also
-provides resistance to Sybil attacks--- an active attacker would need to
-obtain an outsize portion of all tokens locked up by keep providers to
-ensure their overwhelming selection backing new keeps.
+Итак, первый стимул -  провайдеры должны будут доказать 
+наличие денежного запаса в валюте токена системы. Значительное 
+нарушение сети приведёт к снижению стоимости токена, и это 
+стимулирует честность провайдеров, иначе их собственные запасы 
+обесценятся. Эта схема также обеспечивает устойчивость к атакам 
+Sybil, т.к. атакующему нужно будет сначала приобрести часть 
+токенов, превышающую ту, что заморожена провайдерами кеер, 
+чтобы обеспечить себе их выбор для поддержки новых хранилищ. 
 
-Second, keep redundancy can be used to further minimize availability
-disruptions \cite{blockchainMultipartyComputation}. All nodes can be
-required to include a deposit when they publish their results. If
-their results can't be verified by the included SPDZ proof, their
-deposit is forfeit to competing nodes.
+Во-вторых, избыток хранилищ может быть использован во благо 
+дальнейшей минимизации сбоев доступности сети \cite{blockchainMultipartyComputation}. 
+Все ноды могут быть обязаны внести депозит при публикации 
+результатов. Если подлинность их результатов не может быть 
+доказана с помощью включённого в процесс SPDZ, они лишаются 
+депозита  и он распределяется между конкурирующими нодами.
 
-\section{High-level network design}
+\section{Общее описание дизайна сети}
 
-Deploying sMPC-based privacy on a public blockchain requires
-supporting infrastructure. To build a functional privacy network
-against Ethereum, our first target blockchain, we'll introduce
-components to ensure fair keep node selection, report results, and
-incentivize network actors.
+Установка системы конфиденциальности на основе sMPC на 
+паблик блокчейне нуждается в поддерживающей инфраструктуре. 
+Чтобы создать функционирующую частную сеть на основе Ethereum-
+блокчейна, на который пал наш первый выбор, мы внесём в него 
+компоненты для обеспечения справедливого выбора нод хранилища, 
+отчётов результатов и экономического стимулирования участников 
+сети.
 
-\subsection{The Keep network token}
+\subsection{Токен сети Кеер}
 
-The native network token, \textit{KEEP}, will be required for
-providers to participate.
+Для участия провайдерам потребуется собственный токен сети, 
+ \textit{KEEP}
 
-To be chosen to provide a node for a new keep, a provider must lock up
-a minimum stake in KEEP tokens, using a shared staking contract.
+Чтобы быть выбранным для предоставления ноды для нового хранилища, 
+поставщик должен заморозить минимальное требуемое системой 
+количество токенов KEEP, с помощью совместного стэйкинг контракта.
 
-At any time, a provider can choose to retrieve their stake--- for
-example, to liquidate their position. All withdrawals, however, will
-be subject to a two-week waiting period to disincentivize providers from
-quickly staking and withdrawing their position, which could have
-adverse effects on running keeps and fair keep selection.
+В любое время провайдер может принять решение извлечь свою долю- 
+обналичить, к примеру. Но такие решения будут подвергнуты 
+двухнедельному периоду ожидания, чтобы не поощрять провайдеров 
+на мгновенное снятие с позиции стейкинга, т.к. это может оказать 
+неблагоприятное воздействие на ход работы и справедливое 
+распределение выбора хранилищ.
 
-Requiring a native token, rather than the underlying blockchain's
-currency, means providers will suffer from negative externalities in
-the presence of malicious behavior (see section \ref{activeAttacks}). This sort
-of staking also strengthens the system against Sybil attacks (see section
-\ref{fairKeepSelection}).
+Требование использования собственного токена сети вместо валюты 
+используемого блокчейна означает, что провайдеры будут испытывать 
+на себе негативные эффекты внешних факторов в случае 
+неблагосовестного поведения (см. раздел \ref{activeAttacks}). 
+Это также поможет сделать сеть гораздо более устойчивой к атакам 
+Sybil (см. раздел \ref{fairKeepSelection}).
 
 \subsection{Ensuring fair keep selection}
 \label{fairKeepSelection}
