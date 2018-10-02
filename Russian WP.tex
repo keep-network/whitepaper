@@ -385,147 +385,161 @@ $s_{i'}$. Каждая $P_i$ здесь действует как заказчи
 Техническим Институтом, описывает похожую на нашу систему, с более широким 
 уклоном на общие конфиденциальные вычисления.
 
-The Keep network will incorporate these ideas into the first
-production-ready sMPC system for a public blockchain.
+Keep network соединяет эти идеи в первую готовую к использованию систему 
+sMPC для паблик блокчейнов.
 
-\section{Keep providers} \label{keepProviders}
+\section{Провайдеры Keep} \label{keepProviders}
 
-The Keep network includes a number of different provider types, each
-with their own strengths and tradeoffs. The most important provider,
-however, is a novel application of secure multi party computation.
+Сеть Keep включает различные виды провайдеров, каждый из которых имеет 
+как сильные стороны, так и недостатки. Однако, самым важным провайдером 
+является инновационное применение  sMPC.
 
-\subsection{Simple sMPC}
+\subsection{Простой sMPC}
 
-Simple sMPC keeps are backed by $n$ nodes, each of which maintain a
-share of the provided secret, such that the secret can't be
-reconstructed without all $n$ nodes colluding.
+За простым sMPC хранилищем кeep стоит $n$ - ное количество нод, каждая 
+из которых отвечает за часть секретной информации, и эта информация 
+не может быть восстановлена без вовлечения всех  $n$ нод.
 
-These keeps can be populated securely by divvying up a secret into
-shares via Shamir secret sharing \cite{shamir}, and encrypting each
-share with its respective node's public key. The encrypted shares can
-then be published to the public blockchain, or communicated off-chain.
+Эти хранилища могут быть безопасно заполнены путём разделения 
+секретной информации на части, используя схему разделения секрета 
+Шамира \cite{shamir}, и шифруя каждую часть, используя публичный ключ 
+соответствующей ноды. Затем, зашифрованные части могут быть опубликованы 
+в паблик блокчейне или можно с ними связываться офф-чейн. 
 
-The only computation these keeps will run is an implementation of
-distributed RSA \cite{mauland2009realizing} on sMPC, used to publish
-encrypted data to the blockchain.
+Единственное вычисление, которые эти хранилища будут проводить — это 
+распределенный RSA на sMPC, используемый для публикации зашифрованных 
+данных в блокчейн.
 
-\subsection{Signing sMPC}
+\subsection{Подписывающие sMPC}
 
-The next provider will extend the sMPC keep with two new operations-
-securely generating pseudorandom numbers, and signing and encrypting
-data, using the keep's contents as a key.
+Следующий провайдер внесёт в sMPC хранилище кеер две новые операции — 
+безопасное генерирование псевдослучайных чисел, и подпись и шифрование
+данных, используя содержимое хранилища keep в качестве ключа.
 
-In addition to simple pseudorandom numbers, signing keeps will be able
-to generate RSA \cite{mauland2009realizing} and Bitcoin
-\cite{gennaro2016threshold,coinparty} key pairs, or be populated with
-them via secret sharing.
+В дополнение к простым псевдослучайным числам, подписывающие хранилища 
+кеер смогут генерировать пары ключей RSA \cite{mauland2009realizing} 
+и Bitcoin \cite{gennaro2016threshold,coinparty}, или заполняться 
+ими через схему распределения секретной информации.
 
-This means signing keeps will be able to sign and secure contract
-communications on- and off-chain, as well as sign transactions for
-Bitcoin, Ethereum, and other cryptocurrencies.
+Это означает, что подписывающиеся хранилища кеер смогут подписывать и
+обеспечивать безопасную передачу контрактов он-чейн и офф-чейн, и так 
+же подписывать транзакции Bitcoin, Ethereum и других криптовалют.
 
-Finally, signing keeps can act as pRNG oracles, significantly
-improving current methods of random number generation on public
-blockchains.
+И, наконец, подписывающие хранилища keep смогут действовать как pRNG 
+оракулы, значительно улучшая тем самым существующие методы генерации 
+случайных чисел на паблик блокчейнах.
 
-\subsection{Future providers}
+\subsection{Будущие провайдеры}
 
-The off-chain keep pattern is flexible enough to include a variety of
-other pluggable providers, each with their own unique benefits.
+Офф-чейн шаблон keep достаточно гибок, чтобы включить в себя различные 
+виды других подсоединяемых провайдеров, и каждый имеет свои уникальные 
+плюсы. 
 
-\subsubsection{Secure hardware}
+\subsubsection{Безопасное аппаратное обеспечение}
 
-Keeps backed by secure hardware can be used to lower the cost of
-securing private data by verifying that only signed code is run
-against privileged data.
+Кеер, поддерживаемые безопасным аппаратным обеспечением, могут быть 
+использованы для уменьшения стоимости обеспечения безопасности 
+конфиденциальных данных путем проверки того, что для привилегированных 
+данных используется только подписанный код.
 
-Instead of requiring $n$ nodes to safely split a secret, a secret can
-be sent to a single node that's properly responded to a challenge,
-proving it's running signed code. Not only are fewer nodes required,
-but these keeps wouldn't suffer the computation overhead of secure
-multi-party computation.
+Вместо требования безопасного разделения секрета между n - ным 
+количеством нод, секретная информация может быть отправлена одной ноде, 
+которая должным образом ответила на вызов, доказав, что исполняет 
+подписанный код. В таком случае требуется меньшее количество нод, a 
+так же эти хранилища не будут страдать от вычислительных издержек sMPC 
+из-за наложения коммуникации между вычисляющими сторонами.
+  
+Такой вид безопасности существенно слабее, чем тот, что предоставляет sMPC. 
+Если один безопасный производитель аппаратного обеспечения взломан, он 
+ставит все ноды, использующие это оборудование, под угрозу, смещая модель 
+угрозы. Стоимость и преимущества этого подхода будут зависеть от вида его 
+использования.
 
-This sort of security is fundamentally weaker than that provided by
-secure multi-party computation. If a single secure hardware
-manufacturer is compromised, it puts all nodes using that hardware at
-risk, shifting the threat model. The cost and benefit of this approach
-will depend on the application.
+\subsubsection{Частные смарт-контракты}
 
-\subsubsection{Private smart contracts}
+В отличии от похожих работ над такими системами, как Enigma \cite{enigma} 
+или Hawk \cite{hawk}, которые используют sMPC для построения 
+вычислительных сетей на основе офф-чейн технологии или технологии 
+альтернативных чейн для частных смарт-контрактов, мы решили ограничить 
+функции первоначальных sMPC хранилищ keep до обеспечения безопасности, 
+генерирования, хранения, шифровки и передачи секретной информации. Такие 
+ограничения помогают свести к минимуму количество уязвимых мест для атаки 
+на хранилище в рабочей сети.
 
-Unlike related work on systems like Enigma \cite{enigma} or Hawk
-\cite{hawk}, which use sMPC to build off-chain and alternative-chain
-computation networks for private smart contracts, we've chosen to
-restrict the initial sMPC keeps to generating, securing, storing,
-encrypting, and transmitting secrets. Such restrictions help to
-minimize the attack surface on keeps in a production network.
+В дальнейшей работе, схемы sMPC могут быть использованы для создания 
+хранилищ кеер с более расширенными функциями. Такие хранилища сделают 
+возможными более сложные варианты использования, как например, 
+управление приватными реестрами через публичные блокчейны или 
+бездоверительное исполнение кода третьей стороны над приватными данными.
 
-In later work, sMPC schemes can be used to build more feature-rich
-keeps. These keeps will enable complex use cases, like operating
-private ledgers against public blockchains, or running third-party
-code trustlessly on private data.
 
-\section{Incentivizing keep providers} \label{incentivizingProviders}
+\section{Экономическое мотивировсание провайдеров} \label{incentivizingProviders}
 
-Providers need to be incentivized to maintain capacity on the network.
-Running and securing keeps should be a profitable way to use excess
-compute and storage resources.
+Провайдеры должны быть экономически мотивированы, чтобы обеспечить 
+высокую производительность сети. Управление хранилищами и обеспечение 
+их безопасности должно быть выгодно, учитывая использование избыточных 
+вычислительных ресурсов и ресурсов хранения.  
 
-Consumer contracts, on the other hand, need keeps that will provide:
+ В то же время, контрактам потребителя нужны кеер, предоставляющие следующие
+ условия:
 
 \begin{itemize}
-  \item High availability
-  \item Robustness against data loss
-  \item Maintenance of confidentiality
-  \item Data integrity
+  \item Высокую доступность
+  \item Устойчивость к потере данных
+  \item Обеспечение конфиденциальности
+  \item Целостность (верность) данных
 \end{itemize}
 
-\subsection{Paying for keeps}
+\subsection{Плата за хранилища}
 
-The best payment structure for keep providers will reward highly
-available keeps, and punish poor performance.
+Оптимальная структура оплаты для провайдеров keep будет вознаграждать 
+широкодоступные хранилища и наказывать хранилища с низкой 
+производительностью.
 
 <sequence diagram of deposit + per-operation payment>
 
-The two primary costs providers incur are storage and compute, which
-map naturally to paying keeps per block and per operation.
+Двумя основными затратами для провайдера являются хранение и вычисление, 
+что привело к логичному решению: хранилища кеер берут оплату за каждый 
+блок и за операцию.
 
-Payment per block can be accomplished via a deposit to the managing
-contract at the time of keep initialization, metered out over the
-lifetime of the keep, and refilled occasionally by the calling
-contract. Though this seems like a good fit for payment channels,
-minimizing on-chain fees, the security ramifications differ from
-typical two-party channels. These differences are discussed further in
-the next section.
+Плата за блок может осуществляться путем внесения депозита в управляющий 
+контракт во время инициализации кеер, периодически измеряема в течении 
+срока хранения и повторно пополняема по мере необходимости запрашивающим 
+смарт-контрактом. Несмотря на то, что это кажется отличной возможностью 
+для использования платежных каналов, сведя к минимуму он-чейн комиссии, 
+методы обеспечения безопасности здесь отличаются от типичных двухсторонних 
+каналов. Эти различия обсуждаются подробнее в следующем разделе.
 
-Payment per operation is simpler. Each request to publish a keep's
-contents will require payment of an amount agreed to at the
-initialization of a keep.
+Оплата за операцию осуществляется проще. В каждом запросе о публикации 
+содержимого кeep потребуется оплата суммы, согласованной при инициализации 
+хранилища.
 
-\subsection{Concerns with uptime and reliability} \label{uptime}
+\subsection{Опасения насчёт процесса непрерывной работы и надежности} \label{uptime}
 
-Because availability is vital to using keeps in practice, improper
-termination must be disincentivized.
+Поскольку постоянная доступность критически необходима для практического 
+использования хранилищ keep, внезапно прерванная работа должна быть 
+экономически наказуема.
 
 <proper shutdown protocol>
 
-Any keep that doesn't respond properly within a certain block count
-threshold to a request will be considered aborted. Aborted keeps will
-forfeit all client deposits that have yet to be disbursed. To avoid
-skewing client incentives, the deposits that have been earned, but not
-yet disbursed, will be burned, and the unearned deposits will be
+Работа любого хранилища кеер, которое не отвечает должным образом в 
+течении определенного количества блоков, будет прервана. Прерванные 
+keep будут лишены всех депозитов клиентов, которые еще не выплачены. 
+To avoid skewing client incentives, the deposits that have been earned, 
+but not yet disbursed, will be burned, and the unearned deposits will be
 returned to the client.
 
-Volatility in the crypto currency markets can provide a strong
-incentive for a keep provider to improperly terminate a keep. If the
-value of the paid currency drops significantly relative to the cost of
-running a keep, it's in a provider's best interest to devote their
-limited resources to a better-paying client.
+Для провайдера кеер, волатильность на криптовалютных рынках может стать 
+сильным мотивирующим фактором прервать работу хранилища. Если стоимость 
+уплаченной валюты значительно снижается по сравнению с затратами на 
+управление хранилищем, в интересах провайдера становится выделять свои 
+ограниченные ресурсы на обслуживание клиентов, которые готовы заплатить 
+больше.
 
-To counter this issue, keep providers will need a protocol to
-optionally re-negotiate fees for a running keep.
+Чтобы противостоять этой проблеме, провайдерам кеер потребуется протокол 
+для выборочного пересмотра платы за обслуживание активного хранилища.
 
-\subsection{Concerns with active attacks}
+\subsection{Опасения относительно активных атак}
 \label{activeAttacks}
 
 Existing open-source sMPC frameworks, such as VIFF \cite{viff}, are
