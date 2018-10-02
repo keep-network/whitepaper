@@ -62,10 +62,11 @@
 его публичным статусом. Bitcoin позиционировался как более скрытый 
 способ оплаты, чем традиционная финансовая система, но те, кто 
 знаком с технологией, знают, что, несмотря на то, что он защищён 
-от цензуры, он не может быть приватным по определению [1]. 
-Разработчики, знакомые с Ethereum, быстро учатся корректировать 
-свои ожидания [2]— все состояния контракта публикуются в блокчейне 
-и могут быть легко прочитаны конкурирующими сторонами.
+от цензуры, он не может быть приватным по определению \cite{bitcoinPrivacy}. 
+Разработчики при знакомстве с Ethereum вскоре снижают планку своих 
+ожиданий \cite{ethereumStackexchange}— все состояния контракта 
+публикуются в блокчейне и могут быть легко прочитаны конкурирующими 
+сторонами.
 
 Эти проблемы признаны разработчиками проектов Bitcoin и Ethereum.
 
@@ -141,8 +142,8 @@ Zcash \cite{zcash}- криптовалюты, использующей zk-SNARKs
 разработанный с учетом конкурентности в сети, они могут использовать 
 системы наподобие RAFT, чтобы достичь согласованности.
 
-Одной из таких систем является система J.P. Morgan Quorum [13] - форк 
-Ethereum, поддерживающий поддерживающий приватность не только 
+Одной из таких систем является система J.P. Morgan Quorum \cite{quorum}- 
+форк Ethereum, поддерживающий поддерживающий приватность не только 
 смарт-контрактов, но и обмена сообщениями в сети. Другой системой 
 является недавно анонсированная Майкрософт система Coco Framework \cite{coco}, 
 обеспечивающая конфиденциальность данных поверх существующего 
@@ -184,7 +185,7 @@ Zero-knowledge proofs могут быть использованы для соз
 
 \subsection{Публичное использование, конфиденциальные данные}
 
-NНи один из этих методов не предоставляет удовлетворительное 
+Ни один из этих методов не предоставляет удовлетворительное 
 решение для построения публично верифицируемого, децентрализованного, 
 устойчивого к цензуре приложения, которое будет работать с 
 конфиденциальной информацией.
@@ -239,144 +240,150 @@ Keep - это офф-чейн контейнер для конфиденциал
 \end{tabular}
 \end{table*}
 
-Though keeps maintain state off-chain, they are provisioned and
-messaged by contracts on-chain. We will describe the keep in terms of
-these on-chain operations. The practical implementation of keeps,
-including security guarantees, is covered in sections \ref{eliminatingRisk}
-and \ref{keepProviders}.
+Хотя контейнеры keep хранят информацию офф-чейн, их поддержка и 
+взаимодействие с контрактами происходит он-чейн. Мы опишем эти он-чейн 
+операции с хранилищами Keep. Практическое применение Keep, включая 
+гарантии безопасности, описано в разделах \ref{eliminatingRisk} and \ref{keepProviders}.
 
-\subsubsection{Creation and population}
+\subsubsection{Создание и заполнение}
 
-A contract, $Contract_{owner}$, requests a keep by publishing a
-request to the blockchain. Once a keep, $Keep_{accepted}$, has accepted a
-request and finished initializing off-chain, it will respond to the request
-with a set of public keys the calling contract can use to communicate privately
-with the keep.
+Контракт, $Contract_{owner}$, запрашивает хранилище keep, публикуя запрос 
+в блокчейн. Когда хранилище приняло запрос, $Keep_{accepted}$, и завершило 
+инициализацию офф-чейн, оно отвечает на данный запрос набором открытых 
+ключей, которые запрашивающий контракт может использовать, чтобы 
+конфиденциально связываться с хранилищем. 
 
-Once the keep has been created, it can be populated in a number of
-ways. dApps can publish secret data to the blockchain, encrypted by
-the keep's public keys, or send the data to the keep off-chain.
-Alternatively, a keep can self-populate with pseudorandom data.
+ Как только хранилище создано, оно может быть заполнено различными способами. 
+ Децентрализованные приложения (dApps) могут размещать зашифрованные при 
+ помощи паблик ключей кеер конфиденциальные данные на блокчейне, или 
+ отправлять данные хранилищу кеер офф-чейн. А так же, keep может 
+ само-заполниться псевдослучайными данными.
 
-\subsubsection{Publishing data on-chain}
+\subsubsection{Публикация данных он-чейн}
 
-The purpose of a keep is to compute a function over its secret and
-publish the results to the blockchain.
+Назначением хранилища keep является вычисление функции на 
+основании секретных данных и её публикация на блокчейне.
 
-Initially, keeps will support publishing their secrets on-chain,
-unmodified or encrypted with a public key provided by
-$Contract_{owner}$. This enables functionality that's difficult in
-today's public smart contracts, like a secret-exposing dead man
-switch, useful in a variety of decentralized market schemes.
+Сначала хранилища будут поддерживать публикацию секретных 
+данных он-чейн либо неизменными, либо зашифрованными при 
+помощи публичного ключа, предоставленного владельцем контракта
+$Contract_{owner}$. Благодаря этому становится возможной 
+функциональность, которой сложно достигнуть в нынешних 
+публичных смарт-контрактах, как, например, раскрывающий 
+конфиденциальные данные Dead Man's Switch, полезный в различных 
+схемах децентрализованного рынка.
 
-Keeps can be extended to use their secret in a variety of other ways,
-including as key material for symmetric encryption and signing.
+Хранилища кеер могут использовать секретные данные множеством 
+других способов, включая их использование в качестве основы 
+для создания ключа для симметричного шифрования и подписи.
 
-\subsubsection{Access management}
+\subsubsection{Управление доступом}
 
-The owning contract $Contract_{owner}$ of a keep can delegate access
-to the keep to other contracts.
+Контракт, владеющий хранилищем кеер $Contract_{owner}$ также 
+может предоставлять доступ к хранилищу и другим контрактам.
 
-Read and admin access can each be granted, allowing another
-contract i($Contract_{delegate}$) to request that a keep's content be
-published (read permission, $P_{read}$), or to delegate further access
-to other contracts (admin permission, $P_{admin}$). Owners
-($Contract_{owner}$) can also revoke their own access.
+Может предоставляться доступ для чтения или администрирования, 
+позволяя другому контракту i($Contract_{delegate}$) запрашивать 
+публикацию содержимого хранилища (read permission, $P_{read}$), 
+или предоставлять дальнейший доступ другим контрактам (admin permission, $P_{admin}$). 
+Владельцы ($Contract_{owner}$) также могут отзывать собственный доступ. 
 
-Access management enables multi-party secret escrow and auditability
-of secret access.
+Управление доступом дает возможность многосторонней безопасной 
+передачи средств на хранение третьему лицу, а также проверки 
+и контроля секретного доступа.
 
-\subsubsection{Destruction}
+\subsubsection{Продолжительность использования}
 
-Depending on the use case, keeps can be long- or short-lived.
-Contracts can request that a keep shut down, and should also handle
-keeps that are terminated unexpectedly, scenarios which are covered in more
-detail later in section \ref{uptime}.
+В зависимости от варианта использования, хранилища keep могут 
+быть использованы в течении короткого или длительного периода.
+Контракты могут запрашивать закрытие хранилища, а также  должны 
+разрешать коллизии с хранилищами, которые неожиданно завершили 
+работу (сценарии, которые более подробно описаны в разделе \ref{uptime}.
 
-\section{Eliminating third-party risk} \label{eliminatingRisk}
+\section{Устранение риска с третьих сторон} \label{eliminatingRisk}
 
-We've described a simple black box for off-chain data storage. The
-standardization of this method of secret management will enable
-secrets to be bought, sold, and transferred on a public blockchain,
-but doesn't inherently solve third-party risks.
+Мы описали обычный черный ящик для хранения данных офф-чейн. 
+Стандартизация этого метода управления секретной информацией 
+позволит секретной информации быть купленной, проданной, отправленной 
+в публичный блокчейн, но, по сути, не решает проблемы стороннего риска.
 
-Next, we'll describe techniques to eliminate third-party risk.
+Далее мы опишем технику устранения стороннего риска.
 
-\subsection{Secure multi party computation} \label{sMPC}
+\subsection{Безопасное многостороннее вычисление} \label{sMPC}
 
-Secure multi party computation (sMPC) is a type of cryptographic
-system where a computation is distributed across multiple
-participants, some of which may be dishonest. Each participant is
-initially given access to a share of a secret by a dealer, and
-computes a function over that share. The outputs are then reported to
-the dealer, who can assemble the final output, without any participant
-learning more than their initial secret share.
+Безопасное многостороннее вычисление (sMPC) - это тип криптографической 
+системы, где вычисление распределяется между многими участниками, 
+некоторые из которых могут иметь недобросовестные намерения. Заказчиком 
+каждому из участников изначально даётся доступ к части секретной 
+информации, над которой он вычисляет функцию. Результаты сообщаются 
+заказчику, который может собрать результат воедино. Таким образом, 
+никто из участников не будет обладать большей информацией, чем была 
+получена ими изначально.
 
-Intuitively, sMPC works like this:
+Наглядно sMPC работает следующим образом:
 
 \begin{enumerate}
-  \item A dealer $D$ wants to compute a function $F$ over a secret,
+  \item Заказчик $D$ хочет вычислить функцию $F$ над секретной информацией,
       $S$.
-  \item The dealer selects $n$ parties to the computation, sending
-      each of them a share of the secret, $s_i$.
-  \item Each party computes a function over their share $f_i(s_i)$ and
-      reports the result to the dealer.
-  \item The dealer combines these outputs, such that
+  \item Заказчик выбирает $n$ - ное количество сторон для вычисления, 
+  и отправляет каждой часть секретной информации, $s_i$.
+  \item Каждая сторона вычисляет функцию через их часть $f_i(s_i)$ и 
+  сообщает результат заказчику.
+  \item Заказчик соединяет выходы данных так, что
       $G(f_1(s_1),f_2(s_2),...f_n(s_n)) = F(S)$
 \end{enumerate}
 
-The shares $s_i$ should be chosen in such a way that exposing any
-share does not jeopardize the secret $S$. A common approach is to use
-Shamir's secret sharing \cite{shamir}, such that details about the
-secret remain confidential in the face of $n-1$ dishonest parties.
+Части $s_i$ должны быть выбраны таким способом, чтобы разоблачение 
+одной части не поставило под угрозу разоблачение секретной 
+информации $S$. Распространенным подходом является использование 
+схемы распределения секрета Шамира (Shamir's Secret Sharing) \cite{shamir}, 
+где детали секрета остаются нераскрытыми перед $n-1$ нечестных сторон. 
 
-This explanation holds for all $F$ including addition, subtraction,
-and multiplication by a known constant. To achieve general
-computation, however, we also need to be able to multiply secrets
-securely.
+Это объяснение справедливо для всех $F$ включая сложение, вычитание 
+и умножение на известную константу. Однако, для достижения общих 
+вычислений, нам также необходимо надежно умножать секретные данные. 
 
-Multiplication adds what the literature calls ``rounds''- communication
-between the parties, rather than just the dealer $D$.
+Умножение привносит то, что в литературе называют «раундами» — общение 
+между сторонами, а не только c заказчиком $D$.
 
-To multiply two secrets, each party $P_i$ of the $n$ chosen by the
-dealer splits its share, $s_i$, into two components, $s_{i1}$ and
-$s_{i2}$. The party multiplies those two components, resulting in
-$s_{i'}$. Each $P_i$ then acts as a dealer among the the remaining
-parties, splitting $s_{i'}$ into $n-1$ pieces.
+Чтобы умножить два секрета, каждая сторона $P_i$ выбранных заказчиком $n$ 
+разбивает свою часть информации, $s_i$, на два компонента, $s_{i1}$ и
+$s_{i2}$. Сторона умножает эти два компонента, получая в результате
+$s_{i'}$. Каждая $P_i$ здесь действует как заказчик среди оставшихся 
+сторон, разбивая $s_{i'}$ на $n-1$ частей. 
 
-Each $P_i$ can now resolve their resulting share of the round of
-multiplication, $s'_i$, given their access to $n-1$ shares of
-$s_{i'}$.
+Каждая $P_i$ теперь может решить свою полученную в раунде умножения 
+часть информации, $s'_i$, имея допуск к $n-1$ частям $s_{i'}$.
 
-With addition and multiplication, sMPC can securely execute general
-computation, at the expense of communication overhead between the
-computing parties.
+Благодаря сложению и умножению, sMPC могут надежно и безопасно выполнять 
+основные вычисления, но за счёт избыточного взаимодействия между 
+вычисляющими сторонами.
 
-\subsection{sMPC and the blockchain}
+\subsection{sMPC и блокчейн}
 
-sMPC was originally conceived in 1982 \cite{yao1982protocols}, but its
-practical application has been limited due to restrictions on the
-security model. Existing sMPC solutions only maintain security in the
-face of an honest majority of parties.
+Первоначально sMPC был разработан в 1982 году \cite{yao1982protocols}, 
+но его практическое применение было лимитировано из-за ограничений на 
+модель безопасности. Существующие решения sMPC обеспечивают безопасность 
+только в случае честности большинства участников. 
 
-The advent of the blockchain enables secure usage of sMPC in
-adversarial scenarios. By using a public blockchain as an immutable
-ledger, sMPC can be made secure in the face of a dishonest
-supermajority \cite{spdz}, and, with the requirement of a network
-token, can be made strongly Sybil-resistant
-(see section \ref{incentivizingProviders}).
+Появление блокчейна позволяет надёжно использовать sMPC и при 
+неблагоприятных сценариях. Используя блокчейн как не подлежащий 
+изменениям реестр, sMPC становится надёжным инструментом даже в случае 
+недобросовестности большинства участников \cite{spdz}, а также 
+сверх-устойчивым к Sybil-атакам, благодаря требованию токена сети 
+(см. раздел \ref{incentivizingProviders}).
 
-For these reasons, sMPC and blockchains are a natural fit. In the
-smart contract space, sMPC has been proposed before as a privacy
-mechanic.
+По этим причинам блокчейны и sMPC естественным образом сочетаются друг 
+с другом. В пространстве смарт-контрактов, sMPC был уже предложен ранее 
+как механизм конфиденциальности. 
 
-In 2014, Vitalik Buterin gave a strong introduction to the subject in
-an early blog post on privacy on the Ethereum public blockchain
-\cite{secretSharingDaos}. In 2016, a team from UMD designed Hawk
-\cite{hawk}, a system that marries public and private smart contracts
-via sMPC, and the Enigma project out of MIT describes a system related
-to ours \cite{enigma}, with a wider focus on general private
-computation.
+В 2014 году, Виталик Бутерин дал введение в этот предмет в своей ранней 
+статье о конфиденциальности в паблик блокчейне Ethereum \cite{secretSharingDaos}. 
+В 2016 году команда из UMD разработала систему HAWK \cite{hawk}, которая 
+объединяет публичные и конфиденциальные смарт-контракты с помощью sMPC, 
+а также проект Enigma \cite{enigma}, разработанный Массачусетским 
+Техническим Институтом, описывает похожую на нашу систему, с более широким 
+уклоном на общие конфиденциальные вычисления.
 
 The Keep network will incorporate these ideas into the first
 production-ready sMPC system for a public blockchain.
