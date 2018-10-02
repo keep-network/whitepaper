@@ -32,167 +32,181 @@
 
 \maketitle
 
-\begin{abstract}
+\begin{Резюме}
 
-  We introduce the keep, a new privacy primitive for developing smart
-  contracts on public blockchains, enabling secure storage and usage
-  of secrets, as well as supporting infrastructure, including the keep
-  market and token.
+  Мы представляем кeep, базовый элемент конфиденциальности 
+  для разработки смарт-контрактов в паблик блокчейнах, который 
+  позволяет безопасное хранение и использование секретной 
+  информации, а вместе с этим и вспомогательную  инфраструктуру, 
+  в том числе и токены keep.
 
-  Our incremental approach to privacy infrastructure can be brought
-  to market on the Ethereum public network, iterated on, and adapted
-  for other public blockchains and cross-blockchain use.
+  Наш последовательный подход к инфраструктуре конфиденциальности 
+  может быть перенесен на рынок через публичную сеть Ethereum, 
+  а также добавлен и адaптирован к использованию в других 
+  паблик блокчейнах и кросс-блокчейнах.
 
-\end{abstract}
+\end{Резюме}
 
-\section{Motivation}
+\section{Мотивация}
 
-\subsection{The irony of public blockchains}
+\subsection{Ирония паблик блокчейнов}
 
-Public blockchains have brought unprecedented transparency and
-auditability to financial technology. Records are immutable,
-verifiable, and censorship-resistant.
+Паблик блокчейны привнесли беспрецедентную прозрачность и 
+аудитоспособность в сферу финансовых технологий. 
+Записи неизменяемы, верифицируемы и защищены от цензуры.
 
-Unfortunately, these strengths are also weaknesses for many potential
-users.
+К сожалению, эти плюсы являются и минусами для многих потенциальных 
+пользователей. 
 
-For every financial use case a public blockchain enables, its public
-status restricts another. Bitcoin is touted as a more private payment
-method than the traditional financial system, but those familiar with
-the technology know that while it may be censorship-resistant, it's
-certainly not private by default \cite{bitcoinPrivacy}. Developers
-introduced to Ethereum quickly learn to adjust their expectations
-\cite{ethereumStackexchange}- all contract state is published to the
-blockchain, and can be easily read by competing interests.
+Каждое использование паблик блокчейна в сфере финансов ограничено 
+его публичным статусом. Bitcoin позиционировался как более скрытый 
+способ оплаты, чем традиционная финансовая система, но те, кто 
+знаком с технологией, знают, что, несмотря на то, что он защищён 
+от цензуры, он не может быть приватным по определению [1]. 
+Разработчики, знакомые с Ethereum, быстро учатся корректировать 
+свои ожидания [2]— все состояния контракта публикуются в блокчейне 
+и могут быть легко прочитаны конкурирующими сторонами.
 
-These issues are recognized by developers of the Bitcoin and Ethereum
-projects.
+Эти проблемы признаны разработчиками проектов Bitcoin и Ethereum.
 
-Confidential transactions \cite{confidentialTransactions} is an
-ongoing effort to bring better privacy, and therefore fungibility, to
-Bitcoin via sidechains \cite{confidentialTransactionsElements}. The
-Zerocash project \cite{zerocash} applied zero-knowledge proofs to
-Bitcoin, leading to the creation of Zcash \cite{zcash}, a
-cryptocurrency using zk-SNARKs to ensure transaction privacy.
+Конфиденциальные транзакции \cite{confidentialTransactions}-текущая 
+попытка решения проблемы конфиденциальности, а с ней и 
+взаимозаменяемости, в Биткойне, с помощью сайдчейнов \cite{confidentialTransactionsElements}. 
+Проект Zerocash \cite{zerocash} применил доказательства нулевого 
+знания (zero-knowledge proofs) в Биткоине, что привело к созданию 
+Zcash \cite{zcash}- криптовалюты, использующей zk-SNARKs для 
+обеспечения конфиденциальности транзакций.
 
-As early as December 2014, Vitalik Buterin, one of the founders of
-Ethereum, explored solving this problem with secure multi party
-computation (sMPC) \cite{secretSharingDaos}. In more recent writing,
-Buterin shares that ``when [he] and others talk to companies about
-building their applications on a blockchain, two primary issues always
-come up: scalability and privacy'' \cite{privacyOnTheBlockchain}.
+Уже в декабре 2014 г., Виталик Бутерин, один из создателей Ethereum, 
+исследовал решение этой проблемы при помощи протокола безопасного 
+многостороннего вычисления (sMPC) \cite{secretSharingDaos}. Во многих 
+недавних публикациях, Бутерин отмечает, что когда он и другие ведут 
+переговоры с компаниями о создании приложений на блокчейн, то 
+всегда всплывают две основные проблемы - масштабируемость и 
+конфиденциальность. \cite{privacyOnTheBlockchain}.
 
-Scalability of public blockchains is a hurdle to mainstream adoption.
-Some of the best minds in the cryptocurrency space \cite{lightning}
-\cite{ethereumSharding} \cite{plasma} are working on multiple
-order-of-magnitude improvements. Privacy, however, hasn't garnered the
-same attention, especially in smart contracts.
+Масштабируемость публичных блокчейнов является препятствием для 
+их широкой адаптации. Одни из лучших умов в области криптовалюты \cite{lightning}
+\cite{ethereumSharding} \cite{plasma} работают над улучшениями 
+в этом направлении. Однако, конфиденциальность не получила должного
+внимания, особенно в отношении смарт-контрактов.
 
-Basic use cases of smart contracts, including publishing secrets after
-certain criteria are met, assessing borrower risk for a loan, and
-signing messages and transactions, are incredibly difficult on today's
-public blockchains.
+Даже базовые виды использования смарт-контрактов, включая 
+публикование секретной информации после соблюдения определённых 
+критериев, оценку риска при выдаче кредита, и подписание сообщений 
+и транзакций, на сегодняшний день невероятно сложно реализовать в 
+паблик блокчейнах.
 
-\subsection{Existing approaches}
+\subsection{Существующие подходы}
 
-In practice, developers have found a number of ways to build
-decentralized applications that use private data.
+На практике, разработчиками были найдены несколько способов для
+разработки децентрализованных приложений, использующих приватные 
+данные.
 
-\subsubsection{The hash-reveal pattern}
+\subsubsection{Шаблон хэш-вскрытия}
 
-A common pattern on public blockchains is to keep private data with
-the application's users. Contracts can receive and manipulate hashes
-of private data, more generally called commitments
-\cite{commitmentScheme}, while users withold the original until
-revealing the private data off-chain. We call this the ``hash-reveal''
-pattern.
+Распространенный подход, используемый на публичных блокчейнах - 
+это хранение личных данных у пользователей приложения. 
+Контракты могут получать доступ и управлять хешами пользовательских 
+данных, \cite{commitmentScheme},в то время как оригиналы хранятся 
+у пользователя до тех пор, пока не будут раскрыты офф-чейн. 
+Мы называем это шаблоном хэш-вскрытия (Hash-reveal pattern).
 
-For many applications, this approach is satisfactory. There's a clear
-privacy benefit over typical web applications- no centralized
-third-party database is at risk. Spreading storage across many users
-means a distributed, diverse target for attackers.
+Для многих приложений такой подход удовлетворителен. Ни одна 
+централизованная база данных сторонних разработчиков здесь не 
+подвергается риску, что создает явное преимущество с точки зрения 
+конфиденциальности по отношению к обычным веб-приложениям. 
+Распределенное хранение между несколькими пользователями означает, 
+что цель для атаки будет рассеяна.
 
-There are significant downsides, however. The hash-reveal pattern
-requires that all users party to a transaction be online, monitoring
-the system, providing private data when necessary, and validating
-hashes against private data provided by other users.
+ Однако, есть и существенные недостатки. Шаблон хэш-вскрытия требует, 
+ чтобы все пользователи, участвующие в транзакции, были онлайн, 
+ осуществляли мониторинг системы, предоставляли конфиденциальные 
+ данные в случае необходимости, и сверяли хэши с приватной информацией, 
+ предоставленной другими пользователями.
 
-This requirement makes the hash-reveal pattern inflexible for complex
-protocols, and unsuitable for systems that don't revolve solely around
-active human participants, like decentralized autonomous organizations
-(DAOs).
+Данные требования делают шаблон хэш-вскрытия недостаточно гибким для 
+сложных протоколов, и так же неподходящим для систем, в которых 
+участвуют неодушевлённые  стороны, как, например, децентрализованные 
+автономные организации(DAO).
 
-\subsubsection{Private blockchains}
+\subsubsection{Приватные блокчейны}
 
-Another response to privacy restrictions, primarily from the finance
-industry, has been to build private blockchains, or so-called
-``permissioned ledgers''.
+Еще один вид решения проблемы конфиденциальности, в основном 
+предпринимаемые финансовой индустрией - создание приватных блокчейнов 
+или так называемых ”закрытых реестров”.
 
-These systems operate in a trusted or semi-trusted manner. Instead of
-using proof-of-work or other consensus mechanisms designed with an
-adversarial network in mind, they can use systems like RAFT to reach
-consensus.
+Эти системы управляются доверенным или полудоверенным способом. Вместо 
+того, чтобы использовать proof-of-work или другой механизм консенсуса, 
+разработанный с учетом конкурентности в сети, они могут использовать 
+системы наподобие RAFT, чтобы достичь согласованности.
 
-One such system, J.P. Morgan's Quorum \cite{quorum}, is a fork of
-Ethereum supporting private contract state and messaging between
-network participants. Another, Microsoft's recently announced Coco
-Framework \cite{coco}, provides data privacy atop an existing private
-blockchain.
+Одной из таких систем является система J.P. Morgan Quorum [13] - форк 
+Ethereum, поддерживающий поддерживающий приватность не только 
+смарт-контрактов, но и обмена сообщениями в сети. Другой системой 
+является недавно анонсированная Майкрософт система Coco Framework \cite{coco}, 
+обеспечивающая конфиденциальность данных поверх существующего 
+приватного блокчейна.
 
-These systems solve privacy at the expense of many of the benefits of
-a public blockchain- trustlessness, public accountability,
-censorship-resistance, and permissionless innovation.
+Эти системы решают проблемы конфиденциальности, увы, за счет утраты 
+многих преимуществ публичного блокчейна - публичной подотчетности, 
+защиты от цензуры и общедоступности. 
 
-\subsubsection{Zero-knowledge proofs}
+\subsubsection{Доказательства с нулевым разглашением (Zero-knowledge proofs)}
 
-Zero-knowledge proofs have been leveraged to maintain privacy on
-public blockchains- most famously, by the Zcash \cite{zcash} project.
+Одним из самых известных примеров использования zero-knowledge proofs 
+для поддержания конфиденциальности на публичных блокчейнах является Zcash \cite{zcash} 
 
-Zero-knowledge proofs allow one party, the prover, to prove a
-statement to another party, the verifier, without revealing the
-knowledge used to prove that statement.  For example, a prover could
-show that they have access to a private key by encrypting a message
-chosen by a verifier. The proof can be trivially checked by the
-verifier by decrypting the cyphertext with the public key. The private
-key, however, remains secret.
+Zero-knowledge proofs позволяют одной доказывающей стороне (рrover), 
+убедить в достоверности утверждения другую проверяющую сторону 
+(verifier), без выявления содержания информации, использованной для 
+доказательства утверждения. Например, доказывающий мог бы показать,
+что он обладает доступом к приватному ключу путем зашифровки с
+ообщения, выбранного проверяющим. Доказательство может быть легко 
+проверено проверяющим при помощи расшифровки сообщения, используя 
+паблик ключ. Приватный ключ остается при этом нерассекреченым.
 
-More relevant to the domain, zero-knowledge proofs can be used for a
-party to prove they have access to funds, or in the case of Zcash, for
-a party to prove to miners that a transaction is valid according to
-the consensus rules of the network.
+Что касается сферы владения, zero-knowledge proofs могут быть 
+использованы какой-либо из сторон для доказательства того, что 
+у них есть доступ к средствам, или, в случае Zcash, для 
+доказательства майнерам, что транзакция действительна, в соответствии 
+с консенсусом сети.
 
-Zero-knowledge proofs can be used to construct private financial
-systems on a public blockchain. On their own, however, they stop short
-of allowing safe delegation of private data from one party to another,
-and suffer the same always-online requirements of the ``hash-reveal''
-pattern.
+Zero-knowledge proofs могут быть использованы для создания частных 
+финансовых систем в паблик блокчейнах. Однако сами по себе они не 
+позволяют безопасно передавать личные данные от одной стороны к 
+другой и, опять же, требуют всегда находиться онлайн для хэш-вскрытия.
 
-Zero-knowledge proofs are a powerful cryptographic tool, and can be
-used in conjunction with other techniques to safely delegate secret
-access and computation (see section \ref{sMPC}).
+Доказательства с нулевым разглашением - очень мощный криптографический 
+инструмент который может быть использован в сочетании с другими 
+методами для предоставления безопасного доступа к приватным данным 
+и вычислениям \ref{sMPC}
 
-\subsection{Public applications, private data}
+\subsection{Публичное использование, конфиденциальные данные}
 
-None of these techniques adequately address how to build a publicly
-verifiable, decentralized, censorship-resistant application that makes
-use of private data.
+NНи один из этих методов не предоставляет удовлетворительное 
+решение для построения публично верифицируемого, децентрализованного, 
+устойчивого к цензуре приложения, которое будет работать с 
+конфиденциальной информацией.
 
-Consider contracts to reveal a secret in case of a dispute between two
-parties, to sign a message verifying contract identity off-chain, or
-to securely encrypt files \footnote{We go over applications in more
-depth later in section \ref{applications}}.
+К примеру, данные решения не могут обеспечить разработку контракта, 
+раскрывающего конфиденциальные данные в случае возникновения 
+разногласий между двумя сторонами, или подписание сообщения, 
+верифицирующего контракт офф-чейн (вне основной цепи) или безопасное
+шифрование файлов \footnote{Мы рассмотрим темы приложений подробнее 
+в разделе \ref{applications}}.
 
-\section{Introducing keeps}
+\section{Представляем keeps}
 
-To solve this mismatch between the transparency of public blockchains,
-and the need of many autonomous smart contracts for private data, we
-introduce the {\em keep}.
+Чтобы решить эту проблему несоответствия между прозрачностью публичных 
+блокчейнов и потребностью множества автономных смарт-контрактов в 
+конфиденциальных данных, мы представляем вашему вниманию {\em keep}.
 
-A keep is an off-chain container for private data. Keeps allow
-contracts to manage and use private data without exposing the data to
-the public blockchain.
+Keep - это офф-чейн контейнер для конфиденциальных данных. Keep 
+позволяет контрактам управлять и использовать конфиденциальные данные 
+без раскрытия этих данных в паблик блокчейне.
 
-\subsection{Keep operations}
+\subsection{Операции с хранилищами Keep}
 
 \begin{table*}[t]
   \centering
