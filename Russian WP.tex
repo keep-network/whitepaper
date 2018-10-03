@@ -615,52 +615,61 @@ Sybil, т.к. атакующему нужно будет сначала прио
 Это также поможет сделать сеть гораздо более устойчивой к атакам 
 Sybil (см. раздел \ref{fairKeepSelection}).
 
-\subsection{Ensuring fair keep selection}
+\subsection{Обеспечение справедливого распределения выбора хранилищ}
 \label{fairKeepSelection}
 
-Contracts requesting keeps and keep providers need to be matched. An
-ideal system would enable price discovery, incentivizing new providers
-to join if capacity is low, across different keep types.
+Контракты, запрашивающие хранилища и провайдеры хранилища, должны 
+быть корректно соединены. В идеале, система позволила бы 
+устанавливать цены, стимулируя новых провайдеров разных типов 
+хранилищ к присоединению, если загруженность невелика.
 
-This matching problem is a great fit for a market. Unfortunately,
-on-chain markets are a difficult problem, prone to complexity, miner
-frontrunning, and orderbook manipulation. A clever attacker could
-manipulate a market, giving them an unfair advantage to be chosen for
-a particular keep. Essentially, a two-sided market would expose the
-network to Sybil attacks.
+Эта проблема соединения хранилищ и провайдеров прекрасно подходит 
+для рынка. К сожалению, он-чейн рынки представляют собой сложную 
+проблему. Они комплексны, подвержены атакам майнеров 
+(miner frontrunning), и манипуляциям с ценами и заказами. 
+  
+Умный атакующий может манипулировать рынком, несправедливо отдавая 
+преимущество быть выбранным определенному хранилищу. Рынок, на 
+котором заявки подают и покупатели и продавцы, будет подвергать 
+сеть Sybil-атакам.
+  
+Вместо рынка нам нужен справедливый механизм распределения выбора 
+хранилища.
 
-In lieu of a market, we need a fair keep selection mechanism.
+\subsubsection{Случайные маячки}
 
-\subsubsection{Random beacons}
+Лучший способ выбора провайдера для нового хранилища —  случайность. 
+К сожалению, Ethereum поддерживает только детерминированные функции. 
+Контракты, нуждающиеся в случайном числе, часто полагаются на услуги 
+доверенного оракула.
 
-The best way to select providers for a new keep is with a fair coin
-toss. Unfortunately, Ethereum only supports deterministic functions.
-Contracts that require a random number often rely on a trusted oracle.
+Система децентрализована настолько, насколько централизован её 
+наибольший компонент. Опираться на доверенную третью сторону - 
+это неприемлемый риск для основной функции проекта.
+  
+Вместо этого мы можем использовать наших провайдеров как 
+децентрализованный источник энтропии. Все провайдеры, заперевшие 
+свой депозит для стейкинга, могут учавствовать в процессе 
+генерации случайных чисел.
+  
+Для дизайна такой системы существует несколько условий:
 
-A system is only as decentralized as its most centralized component.
-Relying on a trusted third party for such a core function of the
-project isn't an acceptable risk.
-
-Instead, we can utilize our keep providers as a decentralized source
-of entropy. All staked providers can be required to take part in the
-random number generation process.
-
-There are a few design considerations for such a system:
 \begin{itemize}
-  \item Providers can't be allowed an unfair advantage over each other
-      in the node selection process.
-  \item Each block on the public chain will require at least one
-      random number of sufficient size. Today's Ethereum block time is
-      25 seconds, but that will likely change significantly in the
-      future. The RNG process needs to be fast enough to support much
-      shorter block time, if necessary.
-  \item RNG needs to be resilient to node failure. Failure in
-      production means no new keeps can be created, so resilience
-      to partitions between providers as well as against active denial
-      of service attacks is desirable.
-  \item While not a hard system requirement, providing the Ethereum
-      network with a trusted source of randomness will also be a great
-      boon to other projects.
+\item Провайдеры не должны иметь никаких преимуществ перед друг 
+другом в процессе выбора ноды.
+\item Для каждого блока на паблик блокчейне будет необходимо 
+хотя бы одно случайное число достаточного размера.
+На сегодняшний день время блока Ethereum составляет 25 секунд, 
+но этот показатель, скорее всего, значительно изменится в будущем. 
+Процесс RNG должен быть достаточно быстрым, чтобы при необходимости 
+поддерживать гораздо более короткое время блока.
+\item RNG должен быть устойчивым к сбоям в нодах, т.к. тогда 
+новые хранилища не могут быть созданы. Поэтому желательна 
+устойчивость к обрывам соединений между провайдерами, а также к 
+активным DoS-атакам.
+\item Хоть это и не обязательное усовершенствование, но добавление 
+в сеть Ethereum механизм генерации случайных чисел также поможет 
+многим другим проектам.
 \end{itemize}
 
 Most distributed key generation schemes are too slow or prone to
