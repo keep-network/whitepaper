@@ -526,9 +526,9 @@ sMPC для паблик блокчейнов.
 Работа любого хранилища кеер, которое не отвечает должным образом в 
 течении определенного количества блоков, будет прервана. Прерванные 
 keep будут лишены всех депозитов клиентов, которые еще не выплачены. 
-To avoid skewing client incentives, the deposits that have been earned, 
-but not yet disbursed, will be burned, and the unearned deposits will be
-returned to the client.
+Чтобы избежать искажения баланса клиентов, депозиты, которые были 
+заработаны, но еще не выплачены, сгорают, а незаработанные депозиты 
+будут возвращены клиенту.
 
 Для провайдера кеер, волатильность на криптовалютных рынках может стать 
 сильным мотивирующим фактором прервать работу хранилища. Если стоимость 
@@ -543,38 +543,39 @@ returned to the client.
 \subsection{Опасения относительно активных атак}
 \label{activeAttacks}
 
-Существующие работы sMPC открытого доступа, такие как VIFF \cite{viff}, 
-являются надёжными в случае активных атак только при условии, 
-что большинство нод добросовестны.
-В таких атаках, хранилища могут быть принуждены выдать неверно 
+Существующие фреймворки sMPC с открытым исходным кодом, такие как 
+VIFF \cite{viff}, являются надёжными в случае активных атак только 
+при условии, что большинство нод добросовестны.
+В таких атаках, хранилища могут быть вынуждены выдать неверно 
 сформулированные данные, но секретная информация может быть 
 скомпрометирована только в случае если все ноды, имеющие свою долю 
-секретной информации, поддерживающие хранилища sMPC, сговорятся, 
-что крайне маловерятно, следовательно, это делает атаки Sybil 
+секретной информации, поддерживающие sMPC хранилища сговорятся, 
+что крайне маловероятно. Следовательно, это делает атаки Sybil 
 практически невозможными.
 
-Недавние решения с использованием доказательств SPDZ \cite{spdz} 
-закрепленных на блокчейне \cite{bitcoinSmpc, blockchainMultipartyComputation} 
+Недавние решения с использованием доказательств SPDZ доказательств \cite{spdz} 
+закрепленных в блокчейне \cite{bitcoinSmpc, blockchainMultipartyComputation} 
 елают подобные атаки невозможными, даже если все вовлеченные ноды 
-keep скомпрометированы. Хранилища sMPC будут публиковать 
-доказательства в паблик блокчейн, которые могут быть использованы 
-для подтверждения истинности. Угроза активных атак в таком случае 
-сводится только лишь к нарушению статуса доступности хранилищ в 
-сети, а не к выдаче неверных данных.
+keep скомпрометированы. Хранилища sMPC будут публиковать в паблик 
+блокчейн доказательства, которые могут быть использованы для 
+подтверждения истинности. Угроза активных атак в таком случае 
+сводится только лишь к нарушению доступности хранилищ в сети, 
+а не к выдаче неверных данных.
 
-Мы решаем проблему разрывa соединения сети, внедряя два 
-экономических стимула для  провайдеров, делая тем самым 
-активные атаки на доступность данных дорогостоящими, и, тем 
-самым, непрактичными.
+Мы решаем проблему разрывa соединения в сети, внедряя два 
+экономических стимула для  провайдеров, делая активные 
+атаки на доступность данных дорогостоящими, и, тем самым, 
+непрактичными.
 
 Итак, первый стимул -  провайдеры должны будут доказать 
 наличие денежного запаса в валюте токена системы. Значительное 
 нарушение сети приведёт к снижению стоимости токена, и это 
-стимулирует честность провайдеров, иначе их собственные запасы 
-обесценятся. Эта схема также обеспечивает устойчивость к атакам 
-Sybil, т.к. атакующему нужно будет сначала приобрести часть 
-токенов, превышающую ту, что заморожена провайдерами кеер, 
-чтобы обеспечить себе их выбор для поддержки новых хранилищ. 
+стимулирует провайдеров вести себя честно, иначе их собственные 
+запасы обесценятся. Эта схема также обеспечивает устойчивость 
+к атакам Sybil, т.к. атакующему нужно будет сначала приобрести 
+часть токенов, превышающую ту, что заморожена провайдерами кеер, 
+чтобы обеспечить себе приоритет выбора для поддержки новых 
+хранилищ. 
 
 Во-вторых, избыток хранилищ может быть использован во благо 
 дальнейшей минимизации сбоев доступности сети \cite{blockchainMultipartyComputation}. 
@@ -585,13 +586,13 @@ Sybil, т.к. атакующему нужно будет сначала прио
 
 \section{Общее описание дизайна сети}
 
-Установка системы конфиденциальности на основе sMPC на 
-паблик блокчейне нуждается в поддерживающей инфраструктуре. 
-Чтобы создать функционирующую частную сеть на основе Ethereum-
-блокчейна, на который пал наш первый выбор, мы внесём в него 
-компоненты для обеспечения справедливого выбора нод хранилища, 
-отчётов результатов и экономического стимулирования участников 
-сети.
+Установка системы конфиденциальности на основе sMPC в 
+паблик блокчейне нуждается в вспомогательной инфраструктуре. 
+Чтобы создать функционирующую приватную сеть на основе Ethereum-
+блокчейна, на который пал наш первый выбор, мы добавим в него 
+компоненты для обеспечения справедливого выбора нод хранилищ, 
+отчетности по результатам работы и экономического стимулирования 
+участников сети.
 
 \subsection{Токен сети Кеер}
 
@@ -599,27 +600,27 @@ Sybil, т.к. атакующему нужно будет сначала прио
  \textit{KEEP}
 
 Чтобы быть выбранным для предоставления ноды для нового хранилища, 
-поставщик должен заморозить минимальное требуемое системой 
+провайдер должен заморозить минимальное требуемое системой 
 количество токенов KEEP, с помощью совместного стэйкинг контракта.
 
 В любое время провайдер может принять решение извлечь свою долю- 
 обналичить, к примеру. Но такие решения будут подвергнуты 
-двухнедельному периоду ожидания, чтобы не поощрять провайдеров 
-на мгновенное снятие с позиции стейкинга, т.к. это может оказать 
-неблагоприятное воздействие на ход работы и справедливое 
+двухнедельному периоду ожидания, чтобы исключить вариант снятия 
+баланса провайдерами сразу после стейкинга, т.к. это может 
+оказать неблагоприятное воздействие на ход работы и справедливое 
 распределение выбора хранилищ.
 
 Требование использования собственного токена сети вместо валюты 
 используемого блокчейна означает, что провайдеры будут испытывать 
 на себе негативные эффекты внешних факторов в случае 
-неблагосовестного поведения (см. раздел \ref{activeAttacks}). 
-Это также поможет сделать сеть гораздо более устойчивой к атакам 
-Sybil (см. раздел \ref{fairKeepSelection}).
+недобросовестного поведения (см. раздел \ref{activeAttacks}). 
+Это также поможет сделать сеть гораздо более устойчивой к 
+Sybil-атакам (см. раздел \ref{fairKeepSelection}).
 
 \subsection{Обеспечение справедливого распределения выбора хранилищ}
 \label{fairKeepSelection}
 
-Контракты, запрашивающие хранилища и провайдеры хранилища, должны 
+Контракты, запрашивающие хранилища, и провайдеры, должны 
 быть корректно соединены. В идеале, система позволила бы 
 устанавливать цены, стимулируя новых провайдеров разных типов 
 хранилищ к присоединению, если загруженность невелика.
@@ -658,33 +659,34 @@ Sybil (см. раздел \ref{fairKeepSelection}).
 \begin{itemize}
 \item Провайдеры не должны иметь никаких преимуществ перед друг 
 другом в процессе выбора ноды.
-\item Для каждого блока на паблик блокчейне будет необходимо 
+\item Для каждого блока в паблик блокчейне будет необходимо 
 хотя бы одно случайное число достаточного размера.
 На сегодняшний день время блока Ethereum составляет 25 секунд, 
 но этот показатель, скорее всего, значительно изменится в будущем. 
-Процесс RNG должен быть достаточно быстрым, чтобы при необходимости 
-поддерживать гораздо более короткое время блока.
-\item RNG должен быть устойчивым к сбоям в нодах, т.к. тогда 
-новые хранилища не могут быть созданы. Поэтому желательна 
-устойчивость к обрывам соединений между провайдерами, а также к 
-активным DoS-атакам.
+Процесс генерации случайных чисел (RNG) должен быть достаточно 
+быстрым, чтобы при необходимости поддерживать гораздо более 
+короткое время блока. \item RNG должен быть устойчивым к сбоям 
+в нодах, т.к. тогда новые хранилища не могут быть созданы. 
+Поэтому желательна устойчивость к обрывам соединений между 
+провайдерами, а также к активным DoS-атакам.
 \item Хоть это и не обязательное усовершенствование, но добавление 
-в сеть Ethereum механизм генерации случайных чисел также поможет 
+в сеть Ethereum механизма генерации случайных чисел также поможет 
 многим другим проектам.
 \end{itemize}
 
-Most distributed key generation schemes are too slow or prone to
-manipulation to be considered. Any scheme we choose should provide
-good performance, regardless of the number of participating providers.
-Instead, most generation schemes require rounds of communication
-between participants, slowing down the key generation process and
-providing a large surface for communication failure.
+Большинство распределенных схем генерации ключей слишком медленны 
+или склонны к манипуляциям, которые необходимо учитывать. Любая 
+выбранная нами схема должна работать безотказно, независимо от 
+количества участвующих провайдеров. Но на самом деле большинство 
+таких схем требуют неоднократного общения участников между собой, 
+замедляя тем самым процесс генерации ключей и оставляя высокую 
+вероятность сбоя связи. 
+ 
+К счастью, команда Dfinity решила эти проблемы с помощью своего 
+проекта случайных маяков, основанного на концепции, которую они 
+называют пороговый переключатель \cite{thresholdRelay}.
 
-Fortunately, the Dfinity team has solved these issues with their
-random beacon design, based on a concept they call threshold relay
-\cite{thresholdRelay}.
-
-\subsubsection{Threshold relay}
+\subsubsection{Пороговый переключатель (Threshold relay)}
 
 \begin{table*}[t]
   \centering
@@ -721,123 +723,134 @@ random beacon design, based on a concept they call threshold relay
 \end{tabular}
 \end{table*}
 
-This work relies on the idea of threshold secret sharing schemes---secret
-sharing schemes that retain confidentiality up to some threshold $t$ of
-honest actors.
+Эта работа опирается на идею о пороговых схемах обмена секретной 
+информацией - схемах, которые сохраняют конфиденциальность до 
+некоторого соблюдённого количества(порога) $t$ добросовестных 
+участников.
 
-Threshold signatures are a related idea. A threshold signature is a
-signature across $n$ parties that requires some minimum $t$ actively
-participating to sign. It's a similar idea to "multi-sig" as deployed
-in cryptocurrencies today.
+Пороговые подписи (threshold signatures) — это похожая идея. 
+Пороговая подпись — это подпись, раздробленная между $n$ -ным 
+количеством участников, требующая некоторой минимальной $t$ активных 
+участников для подписи. Эта идея похожа на «multi-sig», которая 
+сегодня используется для криптовалют.
 
-Traditional multi-sig, however, requires a smart contract on the
-blockchain to validate each signature and release funds. Threshold
-signature schemes actually require a threshold $t$ to construct a
-signature at all, removing a layer of complexity and coordination
-between parties.
+Однако традиционный multi-sig требует наличие смарт-контракта на 
+блокчейне для проверки каждой подписи и вывода средств. А схемы 
+пороговых подписей нуждаются в пороге $t$ чтобы в принципе создать 
+подпись, что убирает излишний уровень сложности и координации 
+между сторонами. 
 
-The use of threshold signatures means a number of participating
-signers in a signing group can be unavailable, and the signature will
-still succeed in the presence of $t$ functioning signers. This
-provides some of our beacon's required resilience in the face of
-failing or misbehaving nodes.
+Использование пороговых подписей означает, что некоторые из участников 
+группы подписания могут быть недоступны, но, несмотря на это, подпись 
+будет успешно сформирована, имея необходимое количество $t$ 
+функционирующих подписывающих участников. Это обеспечивает наш маяк 
+некоторым необходимым процентом устойчивости при сбоях или 
+недобросовестном поведении нод.
 
-If threshold signatures sound familiar, it might be because they're a
-core functionality keeps provide. For example, a keep signing a
-Bitcoin transaction does so using threshold ECDSA.
+Если концепт пороговых подписей вам кажется знакомым, то это потому, 
+что это является одной из основных функций хранилищ. Например, кеер 
+осуществляет подпись биткоин транзакции, используя пороговый ECDSA.  
 
-A threshold relay is a way to chain threshold signatures to create a
-random beacon. Participants in a threshold relay form threshold
-groups. These groups generate new public keys that identify the group
-and correspond to a newly generated threshold private key, split
-across the participants.
+Пороговый переключатель — это способ объединения пороговых подписей 
+для создания случайного маяка. Участники порогового переключателя 
+формируют пороговые группы. Эти группы генерируют новые паблик ключи, 
+которые идентифицируют группу и связаны с новым созданным пороговым 
+приватным ключом(private key), разделенным между участниками.
 
-As providers join the network, they will form threshold groups. These
-groups will then sign a piece of random data, initially provided by
-early network contributors, to bootstrap the relay. The resulting
-signature provides the random data for the next iteration, which can
-be verified by the rest of the network participants and rejected if
-invalid. Each iteration, a new signing group is chosen by the previous
-iteration's random value. As all groups sign the previous iteration's
-value, if a signature that's chosen is invalid, the signature from the
-next group in line can be chosen instead.
+Когда провайдеры присоединятся к сети, они образуют пороговые 
+группы(threshold groups). Затем, эти группы подписывают некую часть 
+случайных данных, заранее предоставленных ранними участниками сети, 
+для запуска переключателя. Полученная подпись предоставит случайные 
+данные для следующей итерации, которая будет проверена остальными 
+участниками сети и, в случае неверности, отклонена. Каждую итерацию, 
+новая группа подписи выбирается с помощью случайного значения, 
+полученного в предыдущей итерации. По ходу подписания всеми группами 
+значения предыдущей итерации, если какая-либо выбранная подпись 
+неверна, то вместо нее может быть выбрана подпись из следующей группы
+в очереди. 
 
-Importantly, the threshold signature scheme needs to be deterministic
-to prevent individual shareholders from biasing the signature outcome
-in their favor. BLS signatures \cite{BLS} have been used in related
-work.
-
+Важно отметить, что схема пороговой подписи должна быть 
+детерминистической, чтобы избежать возможности манипуляции подписями 
+заинтересованными лицами. В похожих работах использовались 
+подписи BLS \cite{BLS} 
+  
 \subsubsection{Keep selection group}
 
-Our threshold relay system will be composed of keep providers seeking
-to be chosen to back a new keep, capturing the fees from that keep.
+Наша система порогового переключателя будет состоять из провайдеров 
+хранилищ, которые ожидают возможности быть выбранными для поддержки 
+нового хранилища, собирая комиссию с работы данного хранилища.
 
-Each block will include a random signature, published by the nominated
-keep selection group. Any keeps that require new nodes will have their
-providers chosen randomly, using the beacon value from the last block.
-
-In this way, we can ensure fair chances to all staked keep providers,
-keeping the cost of a Sybil attack high.
+Каждый блок будет включать в себя случайную подпись, опубликованную 
+назначенной группой выбора хранилищ. Для хранилищ, которым потребуются 
+новые ноды, провайдеры будут выбраны случайным образом, используя 
+значение маяка из последнего блока. 
+  
+Таким образом, мы можем обеспечить равные шансы всем провайдерам, 
+сделавшим стэйкинг, при этом удерживая атаки Sybil очень дорогими.
 
 \section{The result registry}
 
-Keeps will offer a number of methods to publish to the public
-blockchain. In the case where keeps publish to a smart contract
-provided by the keep owner, coordination is simple. In uses that don't
-have a natural contract to communicate with, a result registry will be
-provided as a default to simplify keep and owner coordination.
+Keep предложит ряд способов публикаций результатов в паблик блокчейн. 
+В случае, когда хранилища keep публикуют в смарт-контракте, 
+предоставленном владельцем keep, координация проста. В тех случаях, 
+когда нет прямой связи со смарт-контрактом, по умолчанию будет 
+предоставлен реестр результатов, чтобы упростить координацию между 
+владельцем и хранилищем.
 
-\section{Applications}
+\section{Применения}
 \label{applications}
 
 \subsection{Dead man switch}
 
-A dead man switch is a device that is automatically activated in case
-its owner becomes incapacitated. Keeps enable a particular kind of
-dead man switch- publishing a secret, under certain contract
-conditions.
+A dead man switch — это устройство, которое автоматически активируется, 
+если его владелец становится недееспособным. Хранилища предоставляют 
+определенный тип dead man switch- публикацию секретной информации под 
+определенными условиями, прописанными в контракте. 
 
-Examples of dead man switch applications with keeps include automated
-inheritance (``send my beneficiary my private key if I don't check in
-quarterly''), arbitration with time limits (``if no decision is made in
-10 blocks, publish a shared secret''), as well as protection for
-leakers (``publish a key to these insurance files if I don't check
-in'').
+Примеры приложений, использующих переключатель мертвеца с помощью 
+хранилищ keep, включают автоматическое унаследование («отправьте 
+выбранному мною получателю мой приватный ключ, в случае, если я 
+перестану проверять данные ежеквартально»), арбитраж с временными 
+ограничениями («если решение не принято в 10 блоках, опубликовать 
+секретную информацию»), а также защиту для лиц, принимающих участие 
+(«опубликуйте ключ к этим страховым файлам, если я не отмечался в 
+системе»).
 
-\subsection{Marketplaces for digital goods}
+\subsection{Торговые площадки для цифровых товаров}
 
-Buying and selling digital goods on public blockchains today requires
-settling off-chain. Keeps make marketplaces for digital goods, like
-audio and video files, straightforward.
+Сегодня покупка и продажа цифровых товаров в паблик блокчейнах 
+требует размещения оффчейн. Keep значительно упрощают создание 
+торговых площадок для цифровых товаров, таких как аудио и видео-файлы.
 
-Without keeps, each transfer of a private digital good requires one or
-more hash-reveal constructions on-chain. More complex scenarios
-that require escrow, arbitrators, and other parties who might need
-access to the transfered digital good will need ${n^2}$ on-chain
-transactions to maintain security. They also require each party to be
-online to participate.
+Без хранилищ keep, каждая передача частных цифровых товаров требует 
+одной или более конструкций по раскрытию хэша он-чейн. Для более 
+сложных сценариев, требующих депонирования, арбитров и других сторон, 
+которым может понадобиться доступ к пересылаемому цифровому товару, 
+будут необходимы ${n^2}$ он-чейн транзакции, для обеспечения должной 
+безопасности. А так же от каждой стороны требуется находиться онлайн 
+для участия в сделке.  Хранилища keep снимают требованиe всегда 
+находиться онлайн и упрощают протокол хэш-раскрытия для доступа к 
+управлению. Доступ к хранилищу проверяем, и участники могут иметь к 
+нему доступ, без возможности просматривания его содержимого, что 
+позволяет продолжать оптимизацию. 
 
-Keeps obviate always-online requirements, and simplify the hash-reveal
-protocol to access management. All keep access is auditable, and
-participants can have access to a keep without viewing its contents,
-allowing further optimization.
+Устраняя требование всегда находиться онлайн, или сложных протоколов 
+раскрытия информации, keep может эффективно поддерживать такие сервисы, 
+как iTunes на блокчейне.
 
-Without an always-online requirement or complex reveal protocols,
-keeps can efficiently support services like iTunes on the blockchain.
+\subsection{Псевдослучайный оракул}
 
-\subsection{Pseudorandomness oracle}
+Поскольку хранилища могут заполняться случайными данными, они могут 
+действовать как псевдослучайные оракулы, улучшая популярные в настоящее 
+время подходы \cite{prngStackexchange}. sMPC и другие надёжные 
+хранилища кеер хорошо подходят для децентрализованных лотерей и других 
+подобных игр, где нужна случайность, а также представляют собой 
+фундамент для других он-чейн алгоритмов, где требуется надёжный pRNG. 
 
-Since keeps can populate themselves with random data, they can act as
-pseudorandomness oracles, improving on currently popular methods
-\cite{prngStackexchange}. sMPC and other secure keeps are a good fit for
-decentralized lotteries and other games of chance, as well as offering
-a building block for other on-chain algorithms that require
-tamper-resistant pRNG.
+Эта особенность - важный компонент более сложных использований кеер, 
+таких как, например, децентрализованное подписание.
 
-This capability is an important component of advanced keep users, like
-decentralized signing.
-
-\subsection{Decentralized signing service}
+\subsection{Сервис децентрализованного подписания}
 
 Signing sMPC keep providers are able to sign messages, including
 blockchain transactions, using a generated or provided private key.
