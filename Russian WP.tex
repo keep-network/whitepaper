@@ -214,28 +214,27 @@ Keep - это офф-чейн контейнер для конфиденциал
   \begin{tabular}{|rp{10cm}|}
   \hline
   \multicolumn{2}{|c|}{\textit{Keep operations}} \\
-  \textbf{Create:} & $Contract_{owner}$ publishes a creation request,
-  including an initial deposit and a public key,
-  $K_{Contract_{owner}}$.\\
-  \textbf{Accept:} & A keep, $Keep_{accepted}$, publishes one or more
-  public keys $K_{Keep_{accepted_i}}$ signalling readiness.\\
-  \textbf{Populate:} & $Contract_{owner}$ publishes an initial
-  secret on-chain, encrypted in total or in shares by one or more
-  $K_{Keep_{accepted_i}}$, or a specification for a secret to be
-  generated.\\
-  \textbf{Grant:} & $Contract_{owner}$ publishes another contract
-  address, $Contract_{delegate}$, and a permission level, $P_{read}$
-  or $P_{admin}$.\\
-  \textbf{Compute:} & $Contract_{owner}$ or $Contract_{delegate}$
-  publishes a function to compute over the secret, $F(S,...)$, as well
-  as other arguments to $F$. Initially $F {\in}
-  \{f_{identity},f_{rsa},f_{ecdsa}\}$, though additional functions are
-  planned.\\
-  \textbf{Results:} & $Keep_{accepted}$ publishes the results
-  of its computation, either in whole or in part, over one or more
-  invocations.\\
-  \textbf{Shutdown:} & $Contract_{owner}$ or $Contract_{delegate}$
-  with permission $P_{admin}$ publishes a shutdown request.\\
+  \textbf{Create:} & $Contract_{owner}$ публикует запрос на создание, 
+  кладя начальный депозит и паблик ключ, $K_{Contract_{owner}}$.\\
+  \textbf{Accept:} & Хранилище, $Keep_{accepted}$, публикует один 
+  или более паблик ключей $K_{Keep_{accepted_i}}$ говоря тем самым 
+  о своей готовности.\\
+  \textbf{Populate:} & $Contract_{owner}$ публикует изначальную 
+  секретную информацию он-чейн, зашифрованную полностью или по частям 
+  одним или более $K_{Keep_{accepted_i}}$, или же публикует какие-либо 
+  особые требования для генерирования.\\
+  \textbf{Grant:} & $Contract_{owner}$ публикует ещё один адрес 
+  контракта, $Contract_{delegate}$, и уровень допуска - 
+  $P_{read}$ or $P_{admin}$.\\
+  \textbf{Compute:} & $Contract_{owner}$ или $Contract_{delegate}$
+  публикует функцию, которую нужно вычислить над секретной информацией, 
+  $F(S,...)$, а так же другие параметры $F$. Изначально, $F {\in}
+  \{f_{identity},f_{rsa},f_{ecdsa}\}$, но дополнительные параметры 
+  планируются в дальнейшей pаботе.\\
+  \textbf{Results:} & $Keep_{accepted}$ публикует результат 
+  вычисления - либо цельно, либо в несколько этапов.\\
+  \textbf{Shutdown:} & $Contract_{owner}$ или $Contract_{delegate}$
+  с допуском $P_{admin}$ публикует запрос на закрытие хранилища.\\
   \hline
 \end{tabular}
 \end{table*}
