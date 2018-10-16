@@ -692,14 +692,14 @@ Sybil-атакам (см. раздел \ref{fairKeepSelection}).
   \centering
   \begin{tabular}{|rp{10cm}|}
   \hline
-  \multicolumn{2}{|c|}{\textit{Iterative threshold signatures for
-  randomness on existing chains}} \\
-  \textbf{Registration:} & As providers join the network, they
-  register with at least one threshold group $G_i$ of all groups $G$,
-  generating a share of the group's private key, $s_i$. Threshold groups are
-  capped at $c$ members, and may intersect. Groups that have reached
-  this maximum size publish their public key to the blockchain. We'll
-  designate such groups as $G_{registered}$. \\
+  \multicolumn{2}{|c|}{\textit{Повторяющие пороговые подписи для случайности 
+  в существующих чейн.}} \\
+  \textbf{Регистрация:} & Когда провайдеры присоединяются к сети, они 
+  регистрируются по крайней мере в одной пороговой группе $G_i$ из всех 
+  групп $G$, генерируя часть приватного ключа группы, $s_i$. Количество 
+  участников в пороговых группах не превышает $c$,  и может пересекаться. 
+  Группы, достигшие этого максимального числа участников, публикуют свой 
+  паблик ключ на блокчейн. Назовём их $G_{registered}$. \\
   \textbf{Trusted setup:} & A trusted party posts a random value
   $r_0$ to the blockchain as the beacon's first output. \\
   \textbf{Bootstrapping:} & $mod(r_{0}, |G_{registered}|)$ is
@@ -807,7 +807,7 @@ A dead man switch — это устройство, которое автомат
 определенный тип dead man switch- публикацию секретной информации под 
 определенными условиями, прописанными в контракте. 
 
-Примеры приложений, использующих переключатель мертвеца с помощью 
+Примеры приложений, использующих dead man switch с помощью 
 хранилищ keep, включают автоматическое унаследование («отправьте 
 выбранному мною получателю мой приватный ключ, в случае, если я 
 перестану проверять данные ежеквартально»), арбитраж с временными 
@@ -852,59 +852,69 @@ A dead man switch — это устройство, которое автомат
 
 \subsection{Сервис децентрализованного подписания}
 
-Signing sMPC keep providers are able to sign messages, including
-blockchain transactions, using a generated or provided private key.
+Подписывающие провайдеры sMPC хранилищ могут подписывать сообщения, 
+в том числе блокчейн транзакции, используя сгенерированный или 
+предоставленный приватный ключ.
 
-For the first time, contracts will be able to assert their identity
-off-chain, without requiring the recipient's awareness of blockchain
-state.
+Впервые контракты смогут идентифицировать себя оффчейн, не требуя 
+от получателя принимать во внимание состояние блокчейна.
+  
+Рассмотрим сервис децентрализованного подписания для биткоин 
+транзакции. Такой сервис может участвовать в мультиподписных 
+транзакциях, подписывая только те транзакции, которые следуют 
+строгим правилам, включая дневные лимиты расходов и белые списки 
+получателей. 
+  
+Другие виды использования такого сервиса включают двухфакторную 
+аутентификацию, когда контракт может отвечать на протокол запроса 
+на основе правил блокчейна.
 
-Consider a decentralized signing service for Bitcoin transactions. The
-service can participate in multi-signature transactions, only signing
-transactions that follow a strict set of rules, including daily
-spending limits and recipient whitelists.
+\subsection{Кастоидальные кошельки и кросс-чейн торговля}
 
-Other uses for such a service include second-factor authentication,
-where a contract can answer a challenge-response protocol based on
-rules on the blockchain.
+В качестве особого варианта использования сервиса подписи, контракты 
+могут использовать хранилища для создания собственных кошельков с 
+криптовалютами, полностью контролируя любые полученные средства. 
 
-\subsection{Custodial wallets and cross-chain trading}
+Например, контракт может генерировать Bitcoin-кошелек и подписывать 
+Bitcoin транзакции в ответ на получение средств на собственный 
+блокчейн контракта.
 
-As a special case of a signing service, contracts can use keeps to
-generate their own cryptocurrency wallets, taking full custody of any
-received funds.
+\subsection{Сервис шифрования для блокчейн хранилища}
 
-For example, a contract can generate a Bitcoin wallet, and sign
-Bitcoin transactions in response to receiving assets on the contract's
-native blockchain.
+Такие службы, как Filecoin \cite{filecoin} и Storj \cite{storj} 
+создаются для обеспечения дешевого, повсеместного хранения, 
+доступного в глобальном масштабе, посредством умных контрактов
+(smart contracts) и традиционных интерфейсов хранения. 
 
-\subsection{Encryption service for blockchain storage}
+Эти службы предоставляют несколько гарантий конфиденциальности по 
+умолчанию, оставляя шифрование файлов ответственностью самого 
+пользователя. Keeр хранилища предоставят конфиденциальный мост к 
+блокчейн хранилищу. Генерируя ключ AES при инициализации хранилища 
+keep и обеспечивая хранилищу офф-чейн доступ к данным, умные 
+контракты могут использовать хранилища keep для защиты файлов, 
+хранящихся на децентрализованных сервисах.
 
-Services like Filecoin \cite{filecoin} and Storj \cite{storj} are
-being built to provide cheap, ubiquitous storage, accessible globally,
-via smart contracts and traditional storage interfaces.
+\subsection{Банковские операции на публичных блокчейнах}
 
-These services offer few privacy guarantees by default, leaving the
-onus of file encryption on users. Keeps can provide a private bridge
-to blockchain storage. By generating an AES key at keep initialization
-and providing off-chain data access to the keep, smart contracts can
-use keeps to secure files stored on decentralized services.
+По мере того, как увеличивается количество провайдеров кеер, 
+больше приложений, для проектирования которых ранее требовались 
+приватные блокчейны, теперь могут быть разработаны в публичных 
+сетях.
 
-\subsection{Banking on public blockchains}
+Множество примеров можно найти среди традиционных финансовых 
+решений. Например, кредитование - базовая услуга, предоставляемая 
+большинством банков.
 
-As more keep providers are developed, more applications that once
-required a private blockchain can be built against public networks.
+Процесс кредитования включает в себя необходимость предоставления 
+ряда конфиденциальной информации в ходе процесса. Кредитные баллы 
+заемщика являются конфиденциальной информацией; оценка риска 
+является высококонкурентной информацией; условия займа обычно 
+не публикуются. 
 
-Traditional finance offers many examples. Consider lending, a basic
-service provided by most banks.
-
-There are a number of sensitive variables involved in the lending
-process. Borrower credit scores are sensitive; risk assessment is
-highly competitive; the terms of a loan aren't typically made public.
-
-Keep providers that execute generic private smart contracts can
-protect scores and the risk assessment process, while maintaining
-auditability and all other benefits of a public blockchain.
+Провайдеры keep, приводящие в исполнение общие приватные 
+смарт-контракты, могут защитить информацию о кредитных баллах 
+и процессах оценки рисков, сохраняя при этом аудитоспособность 
+и иные преимущества паблик блокчейна.
 
 \bibliographystyle{unsrt}
 \bibliography{references}{}
