@@ -700,25 +700,26 @@ Sybil-атакам (см. раздел \ref{fairKeepSelection}).
   участников в пороговых группах не превышает $c$,  и может пересекаться. 
   Группы, достигшие этого максимального числа участников, публикуют свой 
   паблик ключ на блокчейн. Назовём их $G_{registered}$. \\
-  \textbf{Trusted setup:} & A trusted party posts a random value
-  $r_0$ to the blockchain as the beacon's first output. \\
-  \textbf{Bootstrapping:} & $mod(r_{0}, |G_{registered}|)$ is
-  used to select a registered threshold group, $G_i$, from
-  $G_{registered}$. $G_i$ signs $r_0$ and publishes the
-  result, $r_1 = threshold(r_0, s_{0\rightarrow{t}})$ where
-  $s_{0\rightarrow{t}}$ is the minimal shares necessary for the group
-  to produce a signature. Note that $threshold(...)$ must be a
-  deterministic signature scheme to avoid share withholding attacks
-  leading to a biased output. \\
-  \textbf{Iteration:} & Each block published on the chain will include
-  a signature from $G_{registered}$ of the random value $r_i$. As the
-  chain grows, the signing threshold groups will change based on
-  provider availability. If any group is non-responsive up to its
-  threshold $t$, the group is removed from $G_{registered}$. \\
-  \textbf{Failure:} & Each iteration is an opportunity for a
-  group to fail to generate a valid signature. If a group $G_i$ fails
-  to sign the last iteration's random value, $G_{i+1}$ will be used
-  instead. \\
+  \textbf{Доверительная установка:} & Доверенный участник сети публикует 
+  случайную единицу $r_0$ в блокчейн в качестве первого результата маяка. \\
+  \textbf{Запуск:} & $mod(r_{0}, |G_{registered}|)$ используется 
+  для выбора зарегистрированной пороговой группы, $G_i$, из всех
+  $G_{registered}$. $G_i$ подписывает $r_0$ и публикует результат,
+  $r_1 = threshold(r_0, s_{0\rightarrow{t}})$ , где $s_{0\rightarrow{t}}$ - 
+  - минимальное количество необходимых частей, чтобы группа могла создать 
+  подпись. Необходимо учесть, что $threshold(...)$ должна быть 
+  детерминистичной схемой подписи, во избежание возможности  
+  манипуляции подписями заинтересованными в этом лицами. \\
+  \textbf{Итерация:} & Каждый блок, опубликованный на чейн, будет 
+  включать в себя подпись из $G_{registered}$ cлучайной единицы $r_i$. 
+  По мере роста чейна, подписывающие пороговые группы будут изменятся, 
+  основываясь на доступности провайдера.    
+  Если какая-либо группа не отвечает в течение времени $t$, группа 
+  удаляется из $G_{registered}$. \\
+  \textbf{Сбои:} & При каждой итерации может случиться, что группа 
+  не может сгенерировать подпись по причине сбоя. Если группа $G_i$ 
+  не может подписать случайную 
+  единицу последней итерации, вместо неё будет использовано $G_{i+1}$. \\
   \hline
 \end{tabular}
 \end{table*}
@@ -774,7 +775,7 @@ Sybil-атакам (см. раздел \ref{fairKeepSelection}).
 заинтересованными лицами. В похожих работах использовались 
 подписи BLS \cite{BLS} 
   
-\subsubsection{Keep selection group}
+\subsubsection{Группа выбора Keep}
 
 Наша система порогового переключателя будет состоять из провайдеров 
 хранилищ, которые ожидают возможности быть выбранными для поддержки 
