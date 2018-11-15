@@ -71,7 +71,7 @@ jobs:
     # Test
     #   This would typically be a build job when using workflows, possibly combined with build
     # This is based on your 1.0 configuration file or project settings
-    - run: make clean && make keep.pdf
+    - run: make clean && make keep.pdf keep.ru.pdf
     # Teardown
     #   If you break your build into multiple jobs with workflows, you will probably want to do the parts of this that are relevant in each
     # Save test results
@@ -82,5 +82,7 @@ jobs:
         path: /tmp/circleci-artifacts
     - store_artifacts:
         path: keep.pdf
+    - store_artifacts:
+        path: keep.ru.pdf
     - store_artifacts:
         path: /tmp/circleci-test-results
