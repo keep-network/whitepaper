@@ -1,10 +1,12 @@
 %% Based on the style files for ACL-2015
 
 \documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
 \usepackage[hidelinks]{hyperref}
 \usepackage{acl2015}
 \usepackage[numbers]{natbib}
 \usepackage{fancyhdr}
+\usepackage{textcomp}
 
 \title{The Keep Network:\protect\\A Privacy Layer for Public Blockchains}
 
@@ -503,11 +505,11 @@ optionally re-negotiate fees for a running keep.
 \label{activeAttacks}
 
 Existing open-source sMPC frameworks, such as VIFF \cite{viff}, are
-secure against active attacks in the presence of a ¾ supermajority of
-honest nodes. In such an attack, keeps can be forced to return
-malformed data, but secrets can't be compromised unless all nodes with
-a unique share backing an sMPC keep are colluding- an extremely high
-bar for a Sybil attack.
+secure against active attacks in the presence of a \textthreequarters\
+supermajority of honest nodes. In such an attack, keeps can be forced to return
+malformed data, but secrets can't be compromised unless all nodes with a unique
+share backing an sMPC keep are colluding- an extremely high bar for a Sybil
+attack.
 
 Recent approaches using SPDZ proofs \cite{spdz} anchored on the
 blockchain \cite{bitcoinSmpc, blockchainMultipartyComputation} make
