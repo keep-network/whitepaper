@@ -13,7 +13,7 @@ orbs:
     executors:
       default:
         docker:
-          - image: keepnetwork/texlive:2
+          - image: keepnetwork/texlive:4
     jobs:
       make_and_store:
         parameters:
