@@ -1,0 +1,820 @@
+%% Based on the style files for ACL-2015
+
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[hidelinks]{hyperref}
+\usepackage{acl2015}
+\usepackage[numbers]{natbib}
+\usepackage{fancyhdr}
+\usepackage{textcomp}
+
+\title{A Rede Keep:\protect\\Uma Camada de Privacidade para Blockchains Públicas}
+
+\author{Matt Luongo \\
+  {\tt mhluongo@gmail.com} \\\And
+  Corbin Pon \\
+  {\tt corbin.pon@gmail.com} \\}
+  
+\date{}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+
+\lfoot{Draft: \href{https://github.com/keep-network/whitepaper/tree/COMMIT}{COMMIT} - \today}
+
+\usepackage{abstract}
+
+\begin{document}
+
+\thispagestyle{fancy}
+
+\maketitle
+
+\begin{abstract}
+
+   Introduzimos o keep, um novo primitivo de privacidade para o desenvolvimento de contratos
+   inteligentes em blockchains públicas, permitindo armazenamento e uso seguros de
+   segredos, bem como infraestrutura de suporte, incluindo o
+   mercado e token do keep.
+
+   Nossa abordagem incremental à infraestrutura de privacidade pode ser trazida
+   comercializar na rede pública Ethereum, iterado e adaptado
+   para outros blockchains públicos e uso cross(multi)-blockchain.
+
+\end{abstract}
+
+\section{Motivação}
+
+\subsection{A ironia das blockchains públicas}
+
+As blockchains públicas trouxeram transparência sem precedentes e
+auditabilidade à tecnologia financeira. Os registros são imutáveis,
+verificáveis e resistentes à censura.
+
+Infelizmente, esses pontos fortes também são pontos fracos para muitos usuários em potencial.
+
+Para cada caso de uso financeiro que um blockchain público permite, seu status público
+restringe os outros. Bitcoin é apresentado como um pagamento mais privado
+que o sistema financeiro tradicional, mas aqueles familiarizados com
+a tecnologia sabem que, embora possa ser resistente à censura, certamente não é privado por padrão \cite{bitcoinPrivacy}. Desenvolvedores introduzidos ao Ethereum aprendem rapidamente a ajustar suas expectativas
+\cite{ethereumStackexchange}- todo o estado do contrato é publicado no
+blockchain e pode ser facilmente lido por interesses concorrentes.
+
+Esses problemas são reconhecidos pelos desenvolvedores dos projetos Bitcoin e Ethereum.
+
+Transações confidenciais \cite{confidentialTransactions} é um
+esforço contínuo para trazer melhor privacidade e, portanto, fungibilidade, para
+Bitcoin via cadeias laterais/sidechains \cite{confidentialTransactionsElements}. O projeto Zerocash \cite{zerocash} aplicou provas de zero conhecimento (zero-knowledge proofs) para o Bitcoin, levando à criação do Zcash \cite{zcash}, uma
+criptomoeda usando zk-SNARKs para garantir a privacidade da transação.
+
+Desde dezembro de 2014, Vitalik Buterin, um dos fundadores da
+Ethereum, explorou a solução desse problema com computação de várias partes seguras (sMPC - secure Multi Party
+Computation) \cite{secretSharingDaos}. Em textos mais recentes,
+Buterin compartilha que ``quando [ele] e outros conversam com empresas sobre
+construir seus aplicativos em uma blockchain, dois problemas principais sempre
+surgem: escalabilidade e privacidade'' \cite{privacyOnTheBlockchain}.
+
+A escalabilidade de blockchains públicas é um obstáculo à adoção convencional.
+Algumas das melhores mentes no espaço de criptomoedas \cite{lightning}
+\cite{ethereumSharding} \cite{plasma} estão trabalhando em várias
+melhorias gigantes. A privacidade, no entanto, não conquistou a
+mesma atenção, especialmente em contratos inteligentes.
+
+Casos básicos de uso de contratos inteligentes, incluindo a publicação de segredos após
+certos critérios serem atendidos, avaliando o risco do tomador de empréstimo e
+assinando mensagens e transações, são incrivelmente difíceis nos blockchains públicos de hoje em dia.
+
+\subsection{Abordagens existentes}
+
+Na prática, os desenvolvedores encontraram várias maneiras de criar
+aplicativos descentralizados que usam dados privados.
+
+\subsubsection{O padrão hash-reveal}
+
+Um padrão comum em blockchains públicas é manter com os usuários do aplicativo os seus dados privados. Os contratos podem receber e manipular hashes
+de dados privados, mais geralmente chamados de compromissos/commitments
+\cite{commitmentScheme}, enquanto os usuários retêm o original até
+revelar os dados privados fora da blockchain. Chamamos isso de padrão ``hash-reveal''.
+
+Para muitas aplicações, essa abordagem é satisfatória. Há um notório
+benefício da privacidade sobre aplicativos Web típicos - nenhum
+banco de dados centralizado de terceiros está em risco. Espalhando o armazenamento por muitos usuários
+significa um alvo distribuído e diversificado para os atacantes.
+
+Existem desvantagens significativas, no entanto. O tal padrão de revelação-de-hash (hash-reveal pattern)
+requer que todos os usuários envolvidos em uma transação estejam online, monitorando o  sistema, fornecendo dados privados quando necessário e validando hashes contra dados privados fornecidos por outros usuários.
+
+Esse requisito torna o padrão de revelação-de-hash inflexível para
+protocolos complexos e inadequado para sistemas que não giram apenas em torno
+participantes humanos ativos, como organizações autônomas descentralizadas
+(DAOs).
+
+\subsubsection{Blockchains privadas}
+
+Outra resposta às restrições de privacidade, principalmente do setor financeiro
+da indústria, foi construir blockchains privados, ou os chamados
+``livros autorizados''.
+
+Esses sistemas operam de maneira confiável ou semi-confiável. Ao invés de
+usar prova-de-trabalho (PoW - proof-of-work) ou outros mecanismos de consenso projetados com uma
+rede adversária em mente, eles podem usar sistemas como o RAFT para alcançar
+consenso.
+
+Um desses sistemas, o Quorum de J.P. Morgan, \cite{quorum}, é um garfo/fork do
+Ethereum que suporta o estado de contrato privado e mensagens entre
+participantes da rede. Outro, o recentemente anunciado Coco Framework \cite{coco} da Microsoft, fornece privacidade de dados no topo de uma blockchain privada existente.
+
+Esses sistemas resolvem a privacidade às custas de muitos dos benefícios de
+uma blockchain pública - confiabilidade (trustlessness - significa sem necessidade de confiar), responsabilidade pública,
+resistência à censura, e inovação sem necessidade de permissões (permissionless); com blockchains privadas, esses benefícios são suprimidos em prol da privacidade.
+
+\subsubsection{Provas de zero-conhecimento - Zero-knowledge proofs}
+
+Provas de conhecimento zero foram aproveitadas para manter a privacidade em
+blockchains públicas - mais famosa, pelo projeto Zcash \cite{zcash}.
+
+As provas de conhecimento zero permitem que uma parte, o provador (the prover), prove uma
+declaração à outra parte, o verificador, sem revelar o
+conhecimento (knowledge) usado para provar essa afirmação. Por exemplo, um provador poderia
+mostrar que eles têm acesso a uma chave privada, criptografando uma mensagem
+escolhido por um verificador. A prova pode ser verificada trivialmente pelo
+verificador ao descriptografar o cyphertext (texto cifrado) com a chave pública. A chave privada (private
+key), no entanto, permanece em segredo.
+
+Mais relevantes para o domínio, provas de conhecimento zero (zero-knowledge proofs) podem ser usadas por uma parte para provar que tem acesso a fundos, ou no caso da Zcash, para uma parte provar aos mineiros que uma transação é válida de acordo com
+as regras de consenso da rede.
+
+Provas de zero-conhecimento podem ser usadas para construir fundos/sistemas financeiros privados
+em uma blockchain pública. Por conta própria, no entanto, eles param
+de permitir a delegação segura de dados privados de uma parte para outra,
+e sofre os mesmos requerimentos sempre-on-line (always-online) do padrão ``hash-revelar''.
+
+As provas de conhecimento zero são uma poderosa ferramenta criptográfica e podem ser
+usado em conjunto com outras técnicas para delegar com segurança o
+acesso e computação (consulte a seção \ref{sMPC}).
+
+\subsection{Aplicações públicas, dados privados}
+
+Nenhuma dessas técnicas aborda adequadamente como construir uma
+aplicação publicamente verificável, descentralizada e resistente à censura que faz
+uso de dados privados.
+
+Considere contratos para revelar um segredo em caso de disputa entre duas partes, para assinar uma mensagem verificando a identidade do contrato fora da blockchain (off-chain), ou
+para criptografar arquivos com segurança \footnote{Examinamos os aplicativos em mais
+profundidade mais adiante na seção \ref{applications}}.
+
+\section{Introdução aos keeps}
+
+Para resolver essa incompatibilidade entre a transparência das blockchains públicas,
+e a necessidade de muitos contratos inteligentes autônomos para dados privados, nós
+introduzimos o {\em keep}.
+
+Um keep é um contêiner fora da blockchain para dados particulares. Os Keeps permitem
+contratos para gerenciar e usar dados privados sem expor os dados ao blockchain público.
+
+\subsection{Operações do Keep}
+
+\begin{table*}[t]
+  \centering
+  \begin{tabular}{|rp{10cm}|}
+  \hline
+  \multicolumn{2}{|c|}{\textit{Operações do Keep}} \\
+  \textbf{Create:} & $Contract_{owner}$ publica uma solicitação de criação, incluindo um depósito inicial e uma chave pública,
+  $K_{Contract_{owner}}$.\\
+  \textbf{Accept:} & Um keep, $Keep_{accepted}$, publica um ou mais chaves públicas $K_{Keep_{accepted_i}}$ sinalizando prontidão\\
+  \textbf{Populate:} & $Contract_{owner}$ publica uma inicial segredo na blockchain, criptografado no total ou em ações por uma ou mais
+  $K_{Keep_{accepted_i}}$, ou uma especificação para que um segredo seja
+   gerado.\\
+  \textbf{Grant:} & $Contract_{owner}$ publishes another contract
+  address, $Contract_{delegate}$, and a permission level, $P_{read}$
+  or $P_{admin}$.\\
+  \textbf{Compute:} & $Contract_{owner}$ or $Contract_{delegate}$
+  publishes a function to compute over the secret, $F(S,...)$, as well
+  as other arguments to $F$. Initially $F {\in}
+  \{f_{identity},f_{rsa},f_{ecdsa}\}$, though additional functions are
+  planned.\\
+  \textbf{Results:} & $Keep_{accepted}$ publishes the results
+  of its computation, either in whole or in part, over one or more
+  invocations.\\
+  \textbf{Shutdown:} & $Contract_{owner}$ or $Contract_{delegate}$
+  with permission $P_{admin}$ publishes a shutdown request.\\
+  \hline
+\end{tabular}
+\end{table*}
+
+Though keeps maintain state off-chain, they are provisioned and
+messaged by contracts on-chain. We will describe the keep in terms of
+these on-chain operations. The practical implementation of keeps,
+including security guarantees, is covered in sections \ref{eliminatingRisk}
+and \ref{keepProviders}.
+
+\subsubsection{Creation and population}
+
+A contract, $Contract_{owner}$, requests a keep by publishing a
+request to the blockchain. Once a keep, $Keep_{accepted}$, has accepted a
+request and finished initializing off-chain, it will respond to the request
+with a set of public keys the calling contract can use to communicate privately
+with the keep.
+
+Once the keep has been created, it can be populated in a number of
+ways. dApps can publish secret data to the blockchain, encrypted by
+the keep's public keys, or send the data to the keep off-chain.
+Alternatively, a keep can self-populate with pseudorandom data.
+
+\subsubsection{Publishing data on-chain}
+
+The purpose of a keep is to compute a function over its secret and
+publish the results to the blockchain.
+
+Initially, keeps will support publishing their secrets on-chain,
+unmodified or encrypted with a public key provided by
+$Contract_{owner}$. This enables functionality that's difficult in
+today's public smart contracts, like a secret-exposing dead man
+switch, useful in a variety of decentralized market schemes.
+
+Keeps can be extended to use their secret in a variety of other ways,
+including as key material for symmetric encryption and signing.
+
+\subsubsection{Access management}
+
+The owning contract $Contract_{owner}$ of a keep can delegate access
+to the keep to other contracts.
+
+Read and admin access can each be granted, allowing another
+contract i($Contract_{delegate}$) to request that a keep's content be
+published (read permission, $P_{read}$), or to delegate further access
+to other contracts (admin permission, $P_{admin}$). Owners
+($Contract_{owner}$) can also revoke their own access.
+
+Access management enables multi-party secret escrow and auditability
+of secret access.
+
+\subsubsection{Destruction}
+
+Depending on the use case, keeps can be long- or short-lived.
+Contracts can request that a keep shut down, and should also handle
+keeps that are terminated unexpectedly, scenarios which are covered in more
+detail later in section \ref{uptime}.
+
+\section{Eliminating third-party risk} \label{eliminatingRisk}
+
+We've described a simple black box for off-chain data storage. The
+standardization of this method of secret management will enable
+secrets to be bought, sold, and transferred on a public blockchain,
+but doesn't inherently solve third-party risks.
+
+Next, we'll describe techniques to eliminate third-party risk.
+
+\subsection{Secure multi party computation} \label{sMPC}
+
+Secure multi party computation (sMPC) is a type of cryptographic
+system where a computation is distributed across multiple
+participants, some of which may be dishonest. Each participant is
+initially given access to a share of a secret by a dealer, and
+computes a function over that share. The outputs are then reported to
+the dealer, who can assemble the final output, without any participant
+learning more than their initial secret share.
+
+Intuitively, sMPC works like this:
+
+\begin{enumerate}
+  \item A dealer $D$ wants to compute a function $F$ over a secret,
+      $S$.
+  \item The dealer selects $n$ parties to the computation, sending
+      each of them a share of the secret, $s_i$.
+  \item Each party computes a function over their share $f_i(s_i)$ and
+      reports the result to the dealer.
+  \item The dealer combines these outputs, such that
+      $G(f_1(s_1),f_2(s_2),...f_n(s_n)) = F(S)$
+\end{enumerate}
+
+The shares $s_i$ should be chosen in such a way that exposing any
+share does not jeopardize the secret $S$. A common approach is to use
+Shamir's secret sharing \cite{shamir}, such that details about the
+secret remain confidential in the face of $n-1$ dishonest parties.
+
+This explanation holds for all $F$ including addition, subtraction,
+and multiplication by a known constant. To achieve general
+computation, however, we also need to be able to multiply secrets
+securely.
+
+Multiplication adds what the literature calls ``rounds''- communication
+between the parties, rather than just the dealer $D$.
+
+To multiply two secrets, each party $P_i$ of the $n$ chosen by the
+dealer splits its share, $s_i$, into two components, $s_{i1}$ and
+$s_{i2}$. The party multiplies those two components, resulting in
+$s_{i'}$. Each $P_i$ then acts as a dealer among the the remaining
+parties, splitting $s_{i'}$ into $n-1$ pieces.
+
+Each $P_i$ can now resolve their resulting share of the round of
+multiplication, $s'_i$, given their access to $n-1$ shares of
+$s_{i'}$.
+
+With addition and multiplication, sMPC can securely execute general
+computation, at the expense of communication overhead between the
+computing parties.
+
+\subsection{sMPC and the blockchain}
+
+sMPC was originally conceived in 1982 \cite{yao1982protocols}, but its
+practical application has been limited due to restrictions on the
+security model. Existing sMPC solutions only maintain security in the
+face of an honest majority of parties.
+
+The advent of the blockchain enables secure usage of sMPC in
+adversarial scenarios. By using a public blockchain as an immutable
+ledger, sMPC can be made secure in the face of a dishonest
+supermajority \cite{spdz}, and, with the requirement of a network
+token, can be made strongly Sybil-resistant
+(see section \ref{incentivizingProviders}).
+
+For these reasons, sMPC and blockchains are a natural fit. In the
+smart contract space, sMPC has been proposed before as a privacy
+mechanic.
+
+In 2014, Vitalik Buterin gave a strong introduction to the subject in
+an early blog post on privacy on the Ethereum public blockchain
+\cite{secretSharingDaos}. In 2016, a team from UMD designed Hawk
+\cite{hawk}, a system that marries public and private smart contracts
+via sMPC, and the Enigma project out of MIT describes a system related
+to ours \cite{enigma}, with a wider focus on general private
+computation.
+
+The Keep network will incorporate these ideas into the first
+production-ready sMPC system for a public blockchain.
+
+\section{Keep providers} \label{keepProviders}
+
+The Keep network includes a number of different provider types, each
+with their own strengths and tradeoffs. The most important provider,
+however, is a novel application of secure multi party computation.
+
+\subsection{Simple sMPC}
+
+Simple sMPC keeps are backed by $n$ nodes, each of which maintain a
+share of the provided secret, such that the secret can't be
+reconstructed without all $n$ nodes colluding.
+
+These keeps can be populated securely by divvying up a secret into
+shares via Shamir secret sharing \cite{shamir}, and encrypting each
+share with its respective node's public key. The encrypted shares can
+then be published to the public blockchain, or communicated off-chain.
+
+The only computation these keeps will run is an implementation of
+distributed RSA \cite{mauland2009realizing} on sMPC, used to publish
+encrypted data to the blockchain.
+
+\subsection{Signing sMPC}
+
+The next provider will extend the sMPC keep with two new operations-
+securely generating pseudorandom numbers, and signing and encrypting
+data, using the keep's contents as a key.
+
+In addition to simple pseudorandom numbers, signing keeps will be able
+to generate RSA \cite{mauland2009realizing} and Bitcoin
+\cite{gennaro2016threshold,coinparty} key pairs, or be populated with
+them via secret sharing.
+
+This means signing keeps will be able to sign and secure contract
+communications on- and off-chain, as well as sign transactions for
+Bitcoin, Ethereum, and other cryptocurrencies.
+
+Finally, signing keeps can act as pRNG oracles, significantly
+improving current methods of random number generation on public
+blockchains.
+
+\subsection{Future providers}
+
+The off-chain keep pattern is flexible enough to include a variety of
+other pluggable providers, each with their own unique benefits.
+
+\subsubsection{Secure hardware}
+
+Keeps backed by secure hardware can be used to lower the cost of
+securing private data by verifying that only signed code is run
+against privileged data.
+
+Instead of requiring $n$ nodes to safely split a secret, a secret can
+be sent to a single node that's properly responded to a challenge,
+proving it's running signed code. Not only are fewer nodes required,
+but these keeps wouldn't suffer the computation overhead of secure
+multi-party computation.
+
+This sort of security is fundamentally weaker than that provided by
+secure multi-party computation. If a single secure hardware
+manufacturer is compromised, it puts all nodes using that hardware at
+risk, shifting the threat model. The cost and benefit of this approach
+will depend on the application.
+
+\subsubsection{Private smart contracts}
+
+Unlike related work on systems like Enigma \cite{enigma} or Hawk
+\cite{hawk}, which use sMPC to build off-chain and alternative-chain
+computation networks for private smart contracts, we've chosen to
+restrict the initial sMPC keeps to generating, securing, storing,
+encrypting, and transmitting secrets. Such restrictions help to
+minimize the attack surface on keeps in a production network.
+
+In later work, sMPC schemes can be used to build more feature-rich
+keeps. These keeps will enable complex use cases, like operating
+private ledgers against public blockchains, or running third-party
+code trustlessly on private data.
+
+\section{Incentivizing keep providers} \label{incentivizingProviders}
+
+Providers need to be incentivized to maintain capacity on the network.
+Running and securing keeps should be a profitable way to use excess
+compute and storage resources.
+
+Consumer contracts, on the other hand, need keeps that will provide:
+
+\begin{itemize}
+  \item High availability
+  \item Robustness against data loss
+  \item Maintenance of confidentiality
+  \item Data integrity
+\end{itemize}
+
+\subsection{Paying for keeps}
+
+The best payment structure for keep providers will reward highly
+available keeps, and punish poor performance.
+
+<sequence diagram of deposit + per-operation payment>
+
+The two primary costs providers incur are storage and compute, which
+map naturally to paying keeps per block and per operation.
+
+Payment per block can be accomplished via a deposit to the managing
+contract at the time of keep initialization, metered out over the
+lifetime of the keep, and refilled occasionally by the calling
+contract. Though this seems like a good fit for payment channels,
+minimizing on-chain fees, the security ramifications differ from
+typical two-party channels. These differences are discussed further in
+the next section.
+
+Payment per operation is simpler. Each request to publish a keep's
+contents will require payment of an amount agreed to at the
+initialization of a keep.
+
+\subsection{Concerns with uptime and reliability} \label{uptime}
+
+Because availability is vital to using keeps in practice, improper
+termination must be disincentivized.
+
+<proper shutdown protocol>
+
+Any keep that doesn't respond properly within a certain block count
+threshold to a request will be considered aborted. Aborted keeps will
+forfeit all client deposits that have yet to be disbursed. To avoid
+skewing client incentives, the deposits that have been earned, but not
+yet disbursed, will be burned, and the unearned deposits will be
+returned to the client.
+
+Volatility in the crypto currency markets can provide a strong
+incentive for a keep provider to improperly terminate a keep. If the
+value of the paid currency drops significantly relative to the cost of
+running a keep, it's in a provider's best interest to devote their
+limited resources to a better-paying client.
+
+To counter this issue, keep providers will need a protocol to
+optionally re-negotiate fees for a running keep.
+
+\subsection{Concerns with active attacks}
+\label{activeAttacks}
+
+Existing open-source sMPC frameworks, such as VIFF \cite{viff}, are
+secure against active attacks in the presence of a \textthreequarters\
+supermajority of honest nodes. In such an attack, keeps can be forced to return
+malformed data, but secrets can't be compromised unless all nodes with a unique
+share backing an sMPC keep are colluding- an extremely high bar for a Sybil
+attack.
+
+Recent approaches using SPDZ proofs \cite{spdz} anchored on the
+blockchain \cite{bitcoinSmpc, blockchainMultipartyComputation} make
+such correctness attacks impossible, even if all nodes backing a keep
+are compromised. sMPC keeps will publish proofs to the public
+blockchain that can be used to verify correctness. The threat of
+active attacks is then reduced to disrupting keep availability, rather
+than returning malformed data.
+
+We address the issue of network disruption by introducing two
+incentives to keep providers, making active attacks on data
+availability impractically expensive.
+
+First, keep providers will be required to prove their holdings in a
+token native to the system. Significant disruption of the network
+should lead to a drop in the value of the token, incentivizing
+provider honesty, lest they devalue their holdings. This scheme also
+provides resistance to Sybil attacks--- an active attacker would need to
+obtain an outsize portion of all tokens locked up by keep providers to
+ensure their overwhelming selection backing new keeps.
+
+Second, keep redundancy can be used to further minimize availability
+disruptions \cite{blockchainMultipartyComputation}. All nodes can be
+required to include a deposit when they publish their results. If
+their results can't be verified by the included SPDZ proof, their
+deposit is forfeit to competing nodes.
+
+\section{High-level network design}
+
+Deploying sMPC-based privacy on a public blockchain requires
+supporting infrastructure. To build a functional privacy network
+against Ethereum, our first target blockchain, we'll introduce
+components to ensure fair keep node selection, report results, and
+incentivize network actors.
+
+\subsection{The Keep network token}
+
+The native network token, \textit{KEEP}, will be required for
+providers to participate.
+
+To be chosen to provide a node for a new keep, a provider must lock up
+a minimum stake in KEEP tokens, using a shared staking contract.
+
+At any time, a provider can choose to retrieve their stake--- for
+example, to liquidate their position. All withdrawals, however, will
+be subject to a two-week waiting period to disincentivize providers from
+quickly staking and withdrawing their position, which could have
+adverse effects on running keeps and fair keep selection.
+
+Requiring a native token, rather than the underlying blockchain's
+currency, means providers will suffer from negative externalities in
+the presence of malicious behavior (see section \ref{activeAttacks}). This sort
+of staking also strengthens the system against Sybil attacks (see section
+\ref{fairKeepSelection}).
+
+\subsection{Ensuring fair keep selection}
+\label{fairKeepSelection}
+
+Contracts requesting keeps and keep providers need to be matched. An
+ideal system would enable price discovery, incentivizing new providers
+to join if capacity is low, across different keep types.
+
+This matching problem is a great fit for a market. Unfortunately,
+on-chain markets are a difficult problem, prone to complexity, miner
+frontrunning, and orderbook manipulation. A clever attacker could
+manipulate a market, giving them an unfair advantage to be chosen for
+a particular keep. Essentially, a two-sided market would expose the
+network to Sybil attacks.
+
+In lieu of a market, we need a fair keep selection mechanism.
+
+\subsubsection{Random beacons}
+
+The best way to select providers for a new keep is with a fair coin
+toss. Unfortunately, Ethereum only supports deterministic functions.
+Contracts that require a random number often rely on a trusted oracle.
+
+A system is only as decentralized as its most centralized component.
+Relying on a trusted third party for such a core function of the
+project isn't an acceptable risk.
+
+Instead, we can utilize our keep providers as a decentralized source
+of entropy. All staked providers can be required to take part in the
+random number generation process.
+
+There are a few design considerations for such a system:
+\begin{itemize}
+  \item Providers can't be allowed an unfair advantage over each other
+      in the node selection process.
+  \item Each block on the public chain will require at least one
+      random number of sufficient size. Today's Ethereum block time is
+      25 seconds, but that will likely change significantly in the
+      future. The RNG process needs to be fast enough to support much
+      shorter block time, if necessary.
+  \item RNG needs to be resilient to node failure. Failure in
+      production means no new keeps can be created, so resilience
+      to partitions between providers as well as against active denial
+      of service attacks is desirable.
+  \item While not a hard system requirement, providing the Ethereum
+      network with a trusted source of randomness will also be a great
+      boon to other projects.
+\end{itemize}
+
+Most distributed key generation schemes are too slow or prone to
+manipulation to be considered. Any scheme we choose should provide
+good performance, regardless of the number of participating providers.
+Instead, most generation schemes require rounds of communication
+between participants, slowing down the key generation process and
+providing a large surface for communication failure.
+
+Fortunately, the Dfinity team has solved these issues with their
+random beacon design, based on a concept they call threshold relay
+\cite{thresholdRelay}.
+
+\subsubsection{Threshold relay}
+
+\begin{table*}[t]
+  \centering
+  \begin{tabular}{|rp{10cm}|}
+  \hline
+  \multicolumn{2}{|c|}{\textit{Iterative threshold signatures for
+  randomness on existing chains}} \\
+  \textbf{Registration:} & As providers join the network, they
+  register with at least one threshold group $G_i$ of all groups $G$,
+  generating a share of the group's private key, $s_i$. Threshold groups are
+  capped at $c$ members, and may intersect. Groups that have reached
+  this maximum size publish their public key to the blockchain. We'll
+  designate such groups as $G_{registered}$. \\
+  \textbf{Trusted setup:} & A trusted party posts a random value
+  $r_0$ to the blockchain as the beacon's first output. \\
+  \textbf{Bootstrapping:} & $mod(r_{0}, |G_{registered}|)$ is
+  used to select a registered threshold group, $G_i$, from
+  $G_{registered}$. $G_i$ signs $r_0$ and publishes the
+  result, $r_1 = threshold(r_0, s_{0\rightarrow{t}})$ where
+  $s_{0\rightarrow{t}}$ is the minimal shares necessary for the group
+  to produce a signature. Note that $threshold(...)$ must be a
+  deterministic signature scheme to avoid share withholding attacks
+  leading to a biased output. \\
+  \textbf{Iteration:} & Each block published on the chain will include
+  a signature from $G_{registered}$ of the random value $r_i$. As the
+  chain grows, the signing threshold groups will change based on
+  provider availability. If any group is non-responsive up to its
+  threshold $t$, the group is removed from $G_{registered}$. \\
+  \textbf{Failure:} & Each iteration is an opportunity for a
+  group to fail to generate a valid signature. If a group $G_i$ fails
+  to sign the last iteration's random value, $G_{i+1}$ will be used
+  instead. \\
+  \hline
+\end{tabular}
+\end{table*}
+
+This work relies on the idea of threshold secret sharing schemes---secret
+sharing schemes that retain confidentiality up to some threshold $t$ of
+honest actors.
+
+Threshold signatures are a related idea. A threshold signature is a
+signature across $n$ parties that requires some minimum $t$ actively
+participating to sign. It's a similar idea to "multi-sig" as deployed
+in cryptocurrencies today.
+
+Traditional multi-sig, however, requires a smart contract on the
+blockchain to validate each signature and release funds. Threshold
+signature schemes actually require a threshold $t$ to construct a
+signature at all, removing a layer of complexity and coordination
+between parties.
+
+The use of threshold signatures means a number of participating
+signers in a signing group can be unavailable, and the signature will
+still succeed in the presence of $t$ functioning signers. This
+provides some of our beacon's required resilience in the face of
+failing or misbehaving nodes.
+
+If threshold signatures sound familiar, it might be because they're a
+core functionality keeps provide. For example, a keep signing a
+Bitcoin transaction does so using threshold ECDSA.
+
+A threshold relay is a way to chain threshold signatures to create a
+random beacon. Participants in a threshold relay form threshold
+groups. These groups generate new public keys that identify the group
+and correspond to a newly generated threshold private key, split
+across the participants.
+
+As providers join the network, they will form threshold groups. These
+groups will then sign a piece of random data, initially provided by
+early network contributors, to bootstrap the relay. The resulting
+signature provides the random data for the next iteration, which can
+be verified by the rest of the network participants and rejected if
+invalid. Each iteration, a new signing group is chosen by the previous
+iteration's random value. As all groups sign the previous iteration's
+value, if a signature that's chosen is invalid, the signature from the
+next group in line can be chosen instead.
+
+Importantly, the threshold signature scheme needs to be deterministic
+to prevent individual shareholders from biasing the signature outcome
+in their favor. BLS signatures \cite{BLS} have been used in related
+work.
+
+\subsubsection{Keep selection group}
+
+Our threshold relay system will be composed of keep providers seeking
+to be chosen to back a new keep, capturing the fees from that keep.
+
+Each block will include a random signature, published by the nominated
+keep selection group. Any keeps that require new nodes will have their
+providers chosen randomly, using the beacon value from the last block.
+
+In this way, we can ensure fair chances to all staked keep providers,
+keeping the cost of a Sybil attack high.
+
+\section{The result registry}
+
+Keeps will offer a number of methods to publish to the public
+blockchain. In the case where keeps publish to a smart contract
+provided by the keep owner, coordination is simple. In uses that don't
+have a natural contract to communicate with, a result registry will be
+provided as a default to simplify keep and owner coordination.
+
+\section{Applications}
+\label{applications}
+
+\subsection{Dead man switch}
+
+A dead man switch is a device that is automatically activated in case
+its owner becomes incapacitated. Keeps enable a particular kind of
+dead man switch- publishing a secret, under certain contract
+conditions.
+
+Examples of dead man switch applications with keeps include automated
+inheritance (``send my beneficiary my private key if I don't check in
+quarterly''), arbitration with time limits (``if no decision is made in
+10 blocks, publish a shared secret''), as well as protection for
+leakers (``publish a key to these insurance files if I don't check
+in'').
+
+\subsection{Marketplaces for digital goods}
+
+Buying and selling digital goods on public blockchains today requires
+settling off-chain. Keeps make marketplaces for digital goods, like
+audio and video files, straightforward.
+
+Without keeps, each transfer of a private digital good requires one or
+more hash-reveal constructions on-chain. More complex scenarios
+that require escrow, arbitrators, and other parties who might need
+access to the transfered digital good will need ${n^2}$ on-chain
+transactions to maintain security. They also require each party to be
+online to participate.
+
+Keeps obviate always-online requirements, and simplify the hash-reveal
+protocol to access management. All keep access is auditable, and
+participants can have access to a keep without viewing its contents,
+allowing further optimization.
+
+Without an always-online requirement or complex reveal protocols,
+keeps can efficiently support services like iTunes on the blockchain.
+
+\subsection{Pseudorandomness oracle}
+
+Since keeps can populate themselves with random data, they can act as
+pseudorandomness oracles, improving on currently popular methods
+\cite{prngStackexchange}. sMPC and other secure keeps are a good fit for
+decentralized lotteries and other games of chance, as well as offering
+a building block for other on-chain algorithms that require
+tamper-resistant pRNG.
+
+This capability is an important component of advanced keep uses, like
+decentralized signing.
+
+\subsection{Decentralized signing service}
+
+Signing sMPC keep providers are able to sign messages, including
+blockchain transactions, using a generated or provided private key.
+
+For the first time, contracts will be able to assert their identity
+off-chain, without requiring the recipient's awareness of blockchain
+state.
+
+Consider a decentralized signing service for Bitcoin transactions. The
+service can participate in multi-signature transactions, only signing
+transactions that follow a strict set of rules, including daily
+spending limits and recipient whitelists.
+
+Other uses for such a service include second-factor authentication,
+where a contract can answer a challenge-response protocol based on
+rules on the blockchain.
+
+\subsection{Custodial wallets and cross-chain trading}
+
+As a special case of a signing service, contracts can use keeps to
+generate their own cryptocurrency wallets, taking full custody of any
+received funds.
+
+For example, a contract can generate a Bitcoin wallet, and sign
+Bitcoin transactions in response to receiving assets on the contract's
+native blockchain.
+
+\subsection{Encryption service for blockchain storage}
+
+Services like Filecoin \cite{filecoin} and Storj \cite{storj} are
+being built to provide cheap, ubiquitous storage, accessible globally,
+via smart contracts and traditional storage interfaces.
+
+These services offer few privacy guarantees by default, leaving the
+onus of file encryption on users. Keeps can provide a private bridge
+to blockchain storage. By generating an AES key at keep initialization
+and providing off-chain data access to the keep, smart contracts can
+use keeps to secure files stored on decentralized services.
+
+\subsection{Banking on public blockchains}
+
+As more keep providers are developed, more applications that once
+required a private blockchain can be built against public networks.
+
+Traditional finance offers many examples. Consider lending, a basic
+service provided by most banks.
+
+There are a number of sensitive variables involved in the lending
+process. Borrower credit scores are sensitive; risk assessment is
+highly competitive; the terms of a loan aren't typically made public.
+
+Keep providers that execute generic private smart contracts can
+protect scores and the risk assessment process, while maintaining
+auditability and all other benefits of a public blockchain.
+
+\bibliographystyle{unsrt}
+\bibliography{references}{}
+
+\end{document}
