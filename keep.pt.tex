@@ -54,73 +54,63 @@ verificáveis e resistentes à censura.
 
 Infelizmente, esses pontos fortes também são pontos fracos para muitos usuários em potencial.
 
-For every financial use case a public blockchain enables, its public
-status restricts another. Bitcoin is touted as a more private payment
-method than the traditional financial system, but those familiar with
-the technology know that while it may be censorship-resistant, it's
-certainly not private by default \cite{bitcoinPrivacy}. Developers
-introduced to Ethereum quickly learn to adjust their expectations
-\cite{ethereumStackexchange}- all contract state is published to the
-blockchain, and can be easily read by competing interests.
+Para cada caso de uso financeiro que um blockchain público permite, seu status público
+restringe os outros. Bitcoin é apresentado como um pagamento mais privado
+que o sistema financeiro tradicional, mas aqueles familiarizados com
+a tecnologia sabem que, embora possa ser resistente à censura, certamente não é privado por padrão \cite{bitcoinPrivacy}. Desenvolvedores introduzidos ao Ethereum aprendem rapidamente a ajustar suas expectativas
+\cite{ethereumStackexchange}- todo o estado do contrato é publicado no
+blockchain e pode ser facilmente lido por interesses concorrentes.
 
-These issues are recognized by developers of the Bitcoin and Ethereum
-projects.
+Esses problemas são reconhecidos pelos desenvolvedores dos projetos Bitcoin e Ethereum.
 
-Confidential transactions \cite{confidentialTransactions} is an
-ongoing effort to bring better privacy, and therefore fungibility, to
-Bitcoin via sidechains \cite{confidentialTransactionsElements}. The
-Zerocash project \cite{zerocash} applied zero-knowledge proofs to
-Bitcoin, leading to the creation of Zcash \cite{zcash}, a
-cryptocurrency using zk-SNARKs to ensure transaction privacy.
+Transações confidenciais \cite{confidentialTransactions} é um
+esforço contínuo para trazer melhor privacidade e, portanto, fungibilidade, para
+Bitcoin via cadeias laterais/sidechains \cite{confidentialTransactionsElements}. O projeto Zerocash \cite{zerocash} aplicou provas de zero conhecimento (zero-knowledge proofs) para o Bitcoin, levando à criação do Zcash \cite{zcash}, uma
+criptomoeda usando zk-SNARKs para garantir a privacidade da transação.
 
-As early as December 2014, Vitalik Buterin, one of the founders of
-Ethereum, explored solving this problem with secure multi party
-computation (sMPC) \cite{secretSharingDaos}. In more recent writing,
-Buterin shares that ``when [he] and others talk to companies about
-building their applications on a blockchain, two primary issues always
-come up: scalability and privacy'' \cite{privacyOnTheBlockchain}.
+Desde dezembro de 2014, Vitalik Buterin, um dos fundadores da
+Ethereum, explorou a solução desse problema com computação de várias partes seguras (sMPC - secure Multi Party
+Computation) \cite{secretSharingDaos}. Em textos mais recentes,
+Buterin compartilha que ``quando [ele] e outros conversam com empresas sobre
+construir seus aplicativos em uma blockchain, dois problemas principais sempre
+surgem: escalabilidade e privacidade'' \cite{privacyOnTheBlockchain}.
 
-Scalability of public blockchains is a hurdle to mainstream adoption.
-Some of the best minds in the cryptocurrency space \cite{lightning}
-\cite{ethereumSharding} \cite{plasma} are working on multiple
-order-of-magnitude improvements. Privacy, however, hasn't garnered the
-same attention, especially in smart contracts.
+A escalabilidade de blockchains públicas é um obstáculo à adoção convencional.
+Algumas das melhores mentes no espaço de criptomoedas \cite{lightning}
+\cite{ethereumSharding} \cite{plasma} estão trabalhando em várias
+melhorias gigantes. A privacidade, no entanto, não conquistou a
+mesma atenção, especialmente em contratos inteligentes.
 
-Basic use cases of smart contracts, including publishing secrets after
-certain criteria are met, assessing borrower risk for a loan, and
-signing messages and transactions, are incredibly difficult on today's
-public blockchains.
+Casos básicos de uso de contratos inteligentes, incluindo a publicação de segredos após
+certos critérios serem atendidos, avaliando o risco do tomador de empréstimo e
+assinando mensagens e transações, são incrivelmente difíceis nos blockchains públicos de hoje em dia.
 
-\subsection{Existing approaches}
+\subsection{Abordagens existentes}
 
-In practice, developers have found a number of ways to build
-decentralized applications that use private data.
+Na prática, os desenvolvedores encontraram várias maneiras de criar
+aplicativos descentralizados que usam dados privados.
 
-\subsubsection{The hash-reveal pattern}
+\subsubsection{O padrão hash-reveal}
 
-A common pattern on public blockchains is to keep private data with
-the application's users. Contracts can receive and manipulate hashes
-of private data, more generally called commitments
-\cite{commitmentScheme}, while users withold the original until
-revealing the private data off-chain. We call this the ``hash-reveal''
-pattern.
+Um padrão comum em blockchains públicas é manter com os usuários do aplicativo os seus dados privados. Os contratos podem receber e manipular hashes
+de dados privados, mais geralmente chamados de compromissos/commitments
+\cite{commitmentScheme}, enquanto os usuários retêm o original até
+revelar os dados privados fora da blockchain. Chamamos isso de padrão ``hash-reveal''.
 
-For many applications, this approach is satisfactory. There's a clear
-privacy benefit over typical web applications- no centralized
-third-party database is at risk. Spreading storage across many users
-means a distributed, diverse target for attackers.
+Para muitas aplicações, essa abordagem é satisfatória. Há um notório
+benefício da privacidade sobre aplicativos Web típicos - nenhum
+banco de dados centralizado de terceiros está em risco. Espalhando o armazenamento por muitos usuários
+significa um alvo distribuído e diversificado para os atacantes.
 
-There are significant downsides, however. The hash-reveal pattern
-requires that all users party to a transaction be online, monitoring
-the system, providing private data when necessary, and validating
-hashes against private data provided by other users.
+Existem desvantagens significativas, no entanto. O tal padrão de revelação-de-hash (hash-reveal pattern)
+requer que todos os usuários envolvidos em uma transação estejam online, monitorando o  sistema, fornecendo dados privados quando necessário e validando hashes contra dados privados fornecidos por outros usuários.
 
-This requirement makes the hash-reveal pattern inflexible for complex
-protocols, and unsuitable for systems that don't revolve solely around
-active human participants, like decentralized autonomous organizations
+Esse requisito torna o padrão de revelação-de-hash inflexível para
+protocolos complexos e inadequado para sistemas que não giram apenas em torno
+participantes humanos ativos, como organizações autônomas descentralizadas
 (DAOs).
 
-\subsubsection{Private blockchains}
+\subsubsection{Blockchains privadas}
 
 Another response to privacy restrictions, primarily from the finance
 industry, has been to build private blockchains, or so-called
