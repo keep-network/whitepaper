@@ -112,90 +112,80 @@ participantes humanos ativos, como organizações autônomas descentralizadas
 
 \subsubsection{Blockchains privadas}
 
-Another response to privacy restrictions, primarily from the finance
-industry, has been to build private blockchains, or so-called
-``permissioned ledgers''.
+Outra resposta às restrições de privacidade, principalmente do setor financeiro
+da indústria, foi construir blockchains privados, ou os chamados
+``livros autorizados''.
 
-These systems operate in a trusted or semi-trusted manner. Instead of
-using proof-of-work or other consensus mechanisms designed with an
-adversarial network in mind, they can use systems like RAFT to reach
-consensus.
+Esses sistemas operam de maneira confiável ou semi-confiável. Ao invés de
+usar prova-de-trabalho (PoW - proof-of-work) ou outros mecanismos de consenso projetados com uma
+rede adversária em mente, eles podem usar sistemas como o RAFT para alcançar
+consenso.
 
-One such system, J.P. Morgan's Quorum \cite{quorum}, is a fork of
-Ethereum supporting private contract state and messaging between
-network participants. Another, Microsoft's recently announced Coco
-Framework \cite{coco}, provides data privacy atop an existing private
-blockchain.
+Um desses sistemas, o Quorum de J.P. Morgan, \cite{quorum}, é um garfo/fork do
+Ethereum que suporta o estado de contrato privado e mensagens entre
+participantes da rede. Outro, o recentemente anunciado Coco Framework \cite{coco} da Microsoft, fornece privacidade de dados no topo de uma blockchain privada existente.
 
-These systems solve privacy at the expense of many of the benefits of
-a public blockchain- trustlessness, public accountability,
-censorship-resistance, and permissionless innovation.
+Esses sistemas resolvem a privacidade às custas de muitos dos benefícios de
+uma blockchain pública - confiabilidade (trustlessness - significa sem necessidade de confiar), responsabilidade pública,
+resistência à censura, e inovação sem necessidade de permissões (permissionless); com blockchains privadas, esses benefícios são suprimidos em prol da privacidade.
 
-\subsubsection{Zero-knowledge proofs}
+\subsubsection{Provas de zero-conhecimento - Zero-knowledge proofs}
 
-Zero-knowledge proofs have been leveraged to maintain privacy on
-public blockchains- most famously, by the Zcash \cite{zcash} project.
+Provas de conhecimento zero foram aproveitadas para manter a privacidade em
+blockchains públicas - mais famosa, pelo projeto Zcash \cite{zcash}.
 
-Zero-knowledge proofs allow one party, the prover, to prove a
-statement to another party, the verifier, without revealing the
-knowledge used to prove that statement.  For example, a prover could
-show that they have access to a private key by encrypting a message
-chosen by a verifier. The proof can be trivially checked by the
-verifier by decrypting the cyphertext with the public key. The private
-key, however, remains secret.
+As provas de conhecimento zero permitem que uma parte, o provador (the prover), prove uma
+declaração à outra parte, o verificador, sem revelar o
+conhecimento (knowledge) usado para provar essa afirmação. Por exemplo, um provador poderia
+mostrar que eles têm acesso a uma chave privada, criptografando uma mensagem
+escolhido por um verificador. A prova pode ser verificada trivialmente pelo
+verificador ao descriptografar o cyphertext (texto cifrado) com a chave pública. A chave privada (private
+key), no entanto, permanece em segredo.
 
-More relevant to the domain, zero-knowledge proofs can be used for a
-party to prove they have access to funds, or in the case of Zcash, for
-a party to prove to miners that a transaction is valid according to
-the consensus rules of the network.
+Mais relevantes para o domínio, provas de conhecimento zero (zero-knowledge proofs) podem ser usadas por uma parte para provar que tem acesso a fundos, ou no caso da Zcash, para uma parte provar aos mineiros que uma transação é válida de acordo com
+as regras de consenso da rede.
 
-Zero-knowledge proofs can be used to construct private financial
-systems on a public blockchain. On their own, however, they stop short
-of allowing safe delegation of private data from one party to another,
-and suffer the same always-online requirements of the ``hash-reveal''
-pattern.
+Provas de zero-conhecimento podem ser usadas para construir fundos/sistemas financeiros privados
+em uma blockchain pública. Por conta própria, no entanto, eles param
+de permitir a delegação segura de dados privados de uma parte para outra,
+e sofre os mesmos requerimentos sempre-on-line (always-online) do padrão ``hash-revelar''.
 
-Zero-knowledge proofs are a powerful cryptographic tool, and can be
-used in conjunction with other techniques to safely delegate secret
-access and computation (see section \ref{sMPC}).
+As provas de conhecimento zero são uma poderosa ferramenta criptográfica e podem ser
+usado em conjunto com outras técnicas para delegar com segurança o
+acesso e computação (consulte a seção \ref{sMPC}).
 
-\subsection{Public applications, private data}
+\subsection{Aplicações públicas, dados privados}
 
-None of these techniques adequately address how to build a publicly
-verifiable, decentralized, censorship-resistant application that makes
-use of private data.
+Nenhuma dessas técnicas aborda adequadamente como construir uma
+aplicação publicamente verificável, descentralizada e resistente à censura que faz
+uso de dados privados.
 
-Consider contracts to reveal a secret in case of a dispute between two
-parties, to sign a message verifying contract identity off-chain, or
-to securely encrypt files \footnote{We go over applications in more
-depth later in section \ref{applications}}.
+Considere contratos para revelar um segredo em caso de disputa entre duas partes, para assinar uma mensagem verificando a identidade do contrato fora da blockchain (off-chain), ou
+para criptografar arquivos com segurança \footnote{Examinamos os aplicativos em mais
+profundidade mais adiante na seção \ref{applications}}.
 
-\section{Introducing keeps}
+\section{Introdução aos keeps}
 
-To solve this mismatch between the transparency of public blockchains,
-and the need of many autonomous smart contracts for private data, we
-introduce the {\em keep}.
+Para resolver essa incompatibilidade entre a transparência das blockchains públicas,
+e a necessidade de muitos contratos inteligentes autônomos para dados privados, nós
+introduzimos o {\em keep}.
 
-A keep is an off-chain container for private data. Keeps allow
-contracts to manage and use private data without exposing the data to
-the public blockchain.
+Um keep é um contêiner fora da blockchain para dados particulares. Os Keeps permitem
+contratos para gerenciar e usar dados privados sem expor os dados ao blockchain público.
 
-\subsection{Keep operations}
+\subsection{Operações do Keep}
 
 \begin{table*}[t]
   \centering
   \begin{tabular}{|rp{10cm}|}
   \hline
-  \multicolumn{2}{|c|}{\textit{Keep operations}} \\
-  \textbf{Create:} & $Contract_{owner}$ publishes a creation request,
-  including an initial deposit and a public key,
+  \multicolumn{2}{|c|}{\textit{Operações do Keep}} \\
+  \textbf{Create:} & $Contract_{owner}$ publica uma solicitação de criação, incluindo um depósito inicial e uma chave pública,
   $K_{Contract_{owner}}$.\\
-  \textbf{Accept:} & A keep, $Keep_{accepted}$, publishes one or more
-  public keys $K_{Keep_{accepted_i}}$ signalling readiness.\\
-  \textbf{Populate:} & $Contract_{owner}$ publishes an initial
-  secret on-chain, encrypted in total or in shares by one or more
-  $K_{Keep_{accepted_i}}$, or a specification for a secret to be
-  generated.\\
+  \textbf{Accept:} & Um keep, $Keep_{accepted}$, publica um ou mais chaves públicas $K_{Keep_{accepted_i}}$ sinalizando prontidão\\
+  \textbf{Populate:} & $Contract_{owner}$ publica uma inicial segredo na blockchain, criptografado no total ou em ações por uma ou mais
+  $K_{Keep_{accepted_i}}$, ou uma especificação para que um segredo seja
+   gerado.\\
   \textbf{Grant:} & $Contract_{owner}$ publishes another contract
   address, $Contract_{delegate}$, and a permission level, $P_{read}$
   or $P_{admin}$.\\
